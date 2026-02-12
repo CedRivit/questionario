@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lista Contatti - CRM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .syncing { animation: pulse 1.5s infinite; }
+        /* Custom scrollbar per la tabella su mobile */
+        .table-container::-webkit-scrollbar { height: 4px; }
+        .table-container::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans min-h-screen pb-10">
+
+    <div class="max-w-6xl mx-auto p-4 md:p-8">
+        
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-black text-indigo-800 uppercase tracking-tighter">🗃️ Archivio Contatti</h1>
+                <p id="counter" class="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Caricamento...</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-3 px-5 rounded-xl shadow-lg transition active:scale-95 flex items-center gap-2">
+                    📊 ESPORTA EXCEL
+                </button>
+                <div id="status" class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm flex items-center">
+                    <span id="statusDot" class="status-dot bg-slate-300"></span>
+                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Offline</span>
+                </div>
+            </div>
+        </header>
+
+        <div id="setupArea" class="hidden mb-8 p-6 bg-white border-2 border-indigo-100 rounded-3xl shadow-md max-w-md mx-auto">
+            <h3 class="font-bold text-indigo-800 mb-4 uppercase text-sm text-center">Configurazione Accesso</h3>
+            <div class="space-y-4">
+                <input type="password" id="ghToken" placeholder="Personal Access Token" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                <input type="text" id="ghRepo" placeholder="utente/repo" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                <button onclick="saveSetup()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ACCEDI AI DATI</button>
+            </div>
+        </div>
+
+        <main id="mainApp" class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+            <div class="table-container overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-100">
+                            <th class="p-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Data/Ora</th>
+                            <th class="p-4 text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Azienda</th>
+                            <th class="p-4 text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Nome</th>
+                            <th class="p-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Contatti</th>
+                            <th class="p-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Occupazione</th>
+                            <th class="p-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cosa Cerca</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsTable" class="divide-y divide-slate-50">
+                        </tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer class="mt-8 text-center">
+            <button onclick="logout()" class="text-[10px] text-slate-300 font-bold uppercase tracking-widest hover:text-red-400">Cambia Account / Reset</button>
+        </footer>
+    </div>
+
+    <script>
+        let config = JSON.parse(localStorage.getItem('gh_view_config'));
+        let contacts = [];
+
+        if (!config) {
+            document.getElementById('setupArea').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function saveSetup() {
+            const token = document.getElementById('ghToken').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            if(token && repo) {
+                localStorage.setItem('gh_view_config', JSON.stringify({token, repo}));
+                location.reload();
+            }
+        }
+
+        function logout() { localStorage.removeItem('gh_view_config'); location.reload(); }
+
+        function setStatus(text, color, isSyncing = false) {
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            txt.innerText = text;
+            txt.className = `text-[10px] font-bold uppercase ${isSyncing ? "syncing" : ""} text-slate-500`;
+            dot.className = `status-dot ${color === 'blue' ? 'bg-blue-500' : color === 'green' ? 'bg-green-500' : 'bg-red-500'}`;
+        }
+
+        async function fetchData() {
+            if (!config) return;
+            setStatus("Download...", "blue", true);
+            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+            try {
+                const res = await fetch(url, { 
+                    headers: { "Authorization": `token ${config.token}` },
+                    cache: 'no-store'
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    contacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                    renderTable();
+                    setStatus("Aggiornato", "green");
+                    document.getElementById('counter').innerText = `${contacts.length} CONTATTI REGISTRATI`;
+                } else {
+                    setStatus("Errore File", "red");
+                }
+            } catch (e) { setStatus("Offline", "red"); }
+        }
+
+        function renderTable() {
+            const list = document.getElementById('contactsTable');
+            if (contacts.length === 0) {
+                list.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 italic font-medium">Nessun dato presente nel file JSON.</td></tr>`;
+                return;
+            }
+
+            list.innerHTML = contacts.map(c => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-4 text-xs font-mono text-slate-400">${c.timestamp || '-'}</td>
+                    <td class="p-4 font-black text-indigo-900 text-sm italic">${c.azienda}</td>
+                    <td class="p-4 font-bold text-slate-700 text-sm">${c.nomeCognome}</td>
+                    <td class="p-4 text-[11px] text-slate-600 leading-tight">
+                        📞 ${c.cell}<br>
+                        ☎️ ${c.tel || '-'}<br>
+                        📍 <span class="text-[9px]">${c.indirizzo}</span>
+                    </td>
+                    <td class="p-4 text-xs text-slate-600 max-w-xs truncate">${c.occupazione}</td>
+                    <td class="p-4 text-xs text-slate-600 max-w-xs truncate">${c.cerco}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportToExcel() {
+            if (contacts.length === 0) {
+                alert("Nessun dato da esportare");
+                return;
+            }
+
+            // Intestazioni Excel
+            const headers = ["Data Salvataggio", "Azienda", "Nome Cognome", "Indirizzo", "Cellulare", "Telefono", "Occupazione", "Cerca"];
+            
+            // Crea il contenuto CSV (Excel lo legge perfettamente)
+            const csvRows = [
+                headers.join(";"), // Intestazioni
+                ...contacts.map(c => [
+                    `"${c.timestamp}"`,
+                    `"${c.azienda}"`,
+                    `"${c.nomeCognome}"`,
+                    `"${c.indirizzo}"`,
+                    `"${c.cell}"`,
+                    `"${c.tel}"`,
+                    `"${c.occupazione.replace(/"/g, '""')}"`,
+                    `"${c.cerco.replace(/"/g, '""')}"`
+                ].join(";"))
+            ].join("\n");
+
+            const blob = new Blob(["\ufeff" + csvRows], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `export_contatti_${new Date().toLocaleDateString()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        if (config) fetchData();
+    </script>
+</body>
+</html>
