@@ -1,5 +1,15 @@
 [
   {
+    "azienda": "legni&Legni",
+    "nomeCognome": "Carp Alexander",
+    "indirizzo": "Via costone ripido ",
+    "cell": "23434534",
+    "tel": "3r434",
+    "occupazione": "legni",
+    "cerco": "alberi ",
+    "timestamp": "12/02/2026, 08:43:30"
+  },
+  {
     "azienda": "acme",
     "nomeCognome": "Andrei Perboschi",
     "indirizzo": "la susulemontagne",
