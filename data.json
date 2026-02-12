@@ -1,6 +1,17 @@
 [
   {
     "azienda": "Rivit",
+    "nomeCognome": "Barbara",
+    "indirizzo": "Sbabo",
+    "cell": "+39 5467649 6764676",
+    "tel": "+39 94946 654646",
+    "occupazione": "Legname",
+    "cerco": "Nuovi alberi",
+    "foto": "IMG_1770888864056.jpg",
+    "timestamp": "12/02/2026, 10:34:25"
+  },
+  {
+    "azienda": "Rivit",
     "nomeCognome": "Paola Saoncella",
     "indirizzo": "Caltrano",
     "cell": "+39 123 55555565",
