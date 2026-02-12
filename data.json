@@ -1,5 +1,15 @@
 [
   {
+    "azienda": "Ditta",
+    "nomeCognome": "Mionome cogno",
+    "indirizzo": "Bologna",
+    "cell": "+39 ;444888",
+    "tel": "+39 75485",
+    "occupazione": "Spionaggio",
+    "cerco": "Spie",
+    "timestamp": "12/02/2026, 10:03:22"
+  },
+  {
     "azienda": "Ragsoc",
     "nomeCognome": "Nome omen",
     "indirizzo": "Via via ",
