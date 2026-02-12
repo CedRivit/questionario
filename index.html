@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CRM Contact Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        input, textarea { font-size: 16px !important; }
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .syncing { animation: pulse 1.5s infinite; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans min-h-screen pb-10">
+
+    <div class="max-w-md mx-auto p-4">
+        
+        <header class="mb-6 flex justify-between items-center">
+            <h1 class="text-xl font-black text-indigo-800 uppercase">📁 Registro Contatti</h1>
+            <div id="status" class="bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm flex items-center">
+                <span id="statusDot" class="status-dot bg-slate-300"></span>
+                <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500">Offline</span>
+            </div>
+        </header>
+
+        <div id="setupArea" class="hidden mb-8 p-6 bg-white border-2 border-indigo-100 rounded-3xl shadow-md">
+            <h3 class="font-bold text-indigo-800 mb-4 uppercase text-sm">Configurazione GitHub</h3>
+            <div class="space-y-4">
+                <input type="password" id="ghToken" placeholder="Personal Access Token" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400">
+                <input type="text" id="ghRepo" placeholder="utente/repo" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400">
+                <button onclick="saveSetup()" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all">CONNETTI</button>
+            </div>
+        </div>
+
+        <main id="mainApp" class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-200">
+            <form id="contactForm" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1">Azienda</label>
+                    <input type="text" id="azienda" required class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:border-indigo-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1">Nome e Cognome</label>
+                    <input type="text" id="nomeCognome" required class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:border-indigo-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1">Indirizzo</label>
+                    <input type="text" id="indirizzo" required class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:border-indigo-400">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1">Cellulare</label>
+                        <input type="tel" id="cell" required inputmode="tel" class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1">Telefono</label>
+                        <input type="tel" id="tel" inputmode="tel" class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-indigo-600 uppercase ml-1 mb-1">Di cosa ti occupi?</label>
+                    <textarea id="occupazione" rows="2" required class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:border-indigo-400"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-indigo-600 uppercase ml-1 mb-1">Cosa cerchi?</label>
+                    <textarea id="cerco" rows="2" required class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:border-indigo-400"></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 active:scale-95 transition-all flex justify-center items-center gap-2">
+                    SALVA NEL CLOUD
+                </button>
+            </form>
+            
+            <button onclick="logout()" class="w-full mt-6 text-[9px] text-slate-300 font-bold uppercase tracking-widest hover:text-red-400">Reset Configurazione</button>
+        </main>
+    </div>
+
+    <script>
+        let config = JSON.parse(localStorage.getItem('gh_crm_config'));
+        let fileSha = "";
+        let allContacts = [];
+
+        if (!config) {
+            document.getElementById('setupArea').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
+        function saveSetup() {
+            const token = document.getElementById('ghToken').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            if(token && repo) {
+                localStorage.setItem('gh_crm_config', JSON.stringify({token, repo}));
+                location.reload();
+            }
+        }
+
+        function logout() { if(confirm("Cancellare i dati di accesso?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
+
+        function setStatus(text, color, isSyncing = false) {
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            txt.innerText = text;
+            txt.className = `text-[10px] font-bold uppercase ${isSyncing ? "syncing" : ""} text-slate-500`;
+            const colors = { blue: "bg-blue-500", green: "bg-green-500", red: "bg-red-500" };
+            dot.className = `status-dot ${colors[color] || "bg-slate-300"}`;
+        }
+
+        // Recupera i dati esistenti e lo SHA del file
+        async function ghFetch() {
+            if (!config) return;
+            setStatus("Connessione...", "blue", true);
+            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+            try {
+                const res = await fetch(url, { headers: { "Authorization": `token ${config.token}` }, cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.sha;
+                    allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                    setStatus("Pronto", "green");
+                } else {
+                    setStatus("Errore File", "red");
+                }
+            } catch (e) { setStatus("Errore Rete", "red"); }
+        }
+
+        // Invia i dati aggiornati a GitHub
+        async function ghPush(newData) {
+            setStatus("Salvataggio...", "blue", true);
+            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+            
+            // Aggiunge il nuovo contatto alla lista esistente
+            allContacts.unshift(newData);
+
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts, null, 2))));
+            const body = { message: `Nuovo contatto: ${newData.nomeCognome}`, content, sha: fileSha };
+            
+            try {
+                const res = await fetch(url, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    fileSha = data.content.sha; // Aggiorna lo SHA per il prossimo invio
+                    setStatus("Salvato!", "green");
+                    alert("✨ Grazie " + newData.nomeCognome + "!\nI dati sono stati salvati correttamente nel cloud.");
+                    document.getElementById('contactForm').reset();
+                } else {
+                    alert("Errore durante il salvataggio su GitHub.");
+                    setStatus("Errore Cloud", "red");
+                }
+            } catch(e) { setStatus("Errore Rete", "red"); }
+        }
+
+        document.getElementById('contactForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const data = {
+                azienda: document.getElementById('azienda').value,
+                nomeCognome: document.getElementById('nomeCognome').value,
+                indirizzo: document.getElementById('indirizzo').value,
+                cell: document.getElementById('cell').value,
+                tel: document.getElementById('tel').value,
+                occupazione: document.getElementById('occupazione').value,
+                cerco: document.getElementById('cerco').value,
+                timestamp: new Date().toLocaleString()
+            };
+            await ghPush(data);
+        };
+
+        if (config) ghFetch();
+    </script>
+</body>
+</html>
