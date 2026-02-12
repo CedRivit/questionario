@@ -7,146 +7,143 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Blocco zoom su input per iOS */
         input, textarea, select { font-size: 16px !important; }
-        
         body { 
             background-image: url('intro.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-
         .glass-panel {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
-
         .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .syncing { animation: pulse 1.5s infinite; }
-        
-        /* Ottimizzazione per dita grandi */
-        .touch-target { min-height: 48px; }
-        
-        /* Scrolling fluido su iOS */
-        .overflow-fix { -webkit-overflow-scrolling: touch; }
+        .input-focus:focus-within { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
     </style>
 </head>
-<body class="font-sans antialiased text-slate-900">
+<body class="font-sans text-slate-900 antialiased">
 
-    <div class="w-full max-w-xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow flex flex-col">
+    <div class="w-full max-w-2xl mx-auto p-3 sm:p-6 lg:p-8">
         
         <header class="mb-6">
-            <div class="glass-panel p-4 sm:p-6 rounded-[2rem] shadow-2xl border-b-4 border-red-600">
-                <div class="flex flex-row items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <img src="FOTO1.jpg" alt="Logo" class="h-10 sm:h-14 w-auto object-contain">
-                        <h1 class="text-lg sm:text-2xl font-black tracking-tighter leading-none">RIVIT S.p.A SB</h1>
-                    </div>
-                    <div class="hidden sm:flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200">
-                        <span id="statusDot" class="status-dot bg-slate-300"></span>
-                        <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Offline</span>
-                    </div>
+            <div class="glass-panel p-4 sm:p-6 rounded-[2rem] shadow-2xl border-b-4 border-red-600 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="FOTO1.jpg" alt="Logo" class="h-10 sm:h-14 w-auto">
+                    <h1 class="text-xl sm:text-2xl font-black tracking-tighter">RIVIT S.p.A SB</h1>
+                </div>
+                <div id="statusContainer" class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                    <span id="statusDot" class="status-dot bg-slate-300"></span>
+                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500">Cloud Offline</span>
                 </div>
             </div>
-            
-            <div class="flex justify-between items-center px-2 mt-3">
-                <a href="index.html" class="text-[11px] font-bold text-white bg-slate-900/60 backdrop-blur px-4 py-2 rounded-full uppercase flex items-center gap-2">
-                    <i class="fas fa-home"></i> Menù
+            <div class="mt-4 px-2">
+                <a href="index.html" class="inline-flex items-center gap-2 bg-slate-900/70 text-white text-[11px] font-bold py-2 px-5 rounded-full backdrop-blur uppercase">
+                    <i class="fas fa-chevron-left"></i> Torna al Menù
                 </a>
-                <div class="sm:hidden flex items-center bg-white/90 px-3 py-1 rounded-full text-[9px] font-bold uppercase shadow-sm">
-                    <span id="statusDotMobile" class="status-dot bg-slate-300 mr-2"></span>
-                    <span id="statusTextMobile">Offline</span>
-                </div>
             </div>
         </header>
 
-        <main id="mainApp" class="glass-panel p-5 sm:p-8 rounded-[2.5rem] shadow-2xl flex-grow overflow-fix">
-            <form id="contactForm" class="space-y-4 sm:space-y-6">
+        <main class="glass-panel p-5 sm:p-8 rounded-[2.5rem] shadow-2xl">
+            <form id="contactForm" class="space-y-6">
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-2 italic">Azienda</label>
-                        <div class="relative">
-                            <i class="fas fa-building absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                            <input type="text" id="azienda" required class="touch-target w-full pl-12 pr-4 bg-white/60 border border-slate-200 rounded-2xl outline-none focus:border-red-500 transition-all" placeholder="Ragione Sociale">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Azienda</label>
+                        <div class="relative flex items-center input-focus border border-slate-200 rounded-2xl bg-white transition-all">
+                            <i class="fas fa-building absolute left-4 text-slate-300"></i>
+                            <input type="text" id="azienda" required class="w-full pl-12 pr-4 py-3 bg-transparent outline-none" placeholder="Ragione Sociale">
                         </div>
                     </div>
 
-                    <div class="md:col-span-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-2 italic">Referente</label>
-                        <div class="relative">
-                            <i class="fas fa-user-tie absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                            <input type="text" id="nomeCognome" required class="touch-target w-full pl-12 pr-4 bg-white/60 border border-slate-200 rounded-2xl outline-none focus:border-red-500 transition-all" placeholder="Nome">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Referente</label>
+                        <div class="relative flex items-center input-focus border border-slate-200 rounded-2xl bg-white transition-all">
+                            <i class="fas fa-user absolute left-4 text-slate-300"></i>
+                            <input type="text" id="nomeCognome" required class="w-full pl-12 pr-4 py-3 bg-transparent outline-none" placeholder="Nome e Cognome">
                         </div>
                     </div>
 
-                    <div class="md:col-span-1">
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-2 italic">Città / Sede</label>
-                        <div class="relative">
-                            <i class="fas fa-map-location absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                            <input type="text" id="indirizzo" required class="touch-target w-full pl-12 pr-4 bg-white/60 border border-slate-200 rounded-2xl outline-none focus:border-red-500 transition-all" placeholder="Località">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Città</label>
+                        <div class="relative flex items-center input-focus border border-slate-200 rounded-2xl bg-white transition-all">
+                            <i class="fas fa-map-marker-alt absolute left-4 text-slate-300"></i>
+                            <input type="text" id="indirizzo" required class="w-full pl-12 pr-4 py-3 bg-transparent outline-none" placeholder="Es: Bologna (BO)">
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-[-12px] ml-2 italic">Recapiti</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div class="flex gap-1">
-                            <select id="prefixCell" class="touch-target bg-white/60 border border-slate-200 rounded-2xl px-2 font-bold text-xs outline-none">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-[-8px] italic">Recapiti Telefonici</label>
+                    
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="flex flex-1 gap-2">
+                            <select id="prefixCell" onchange="toggleManual('prefixCell', 'manualCell')" class="w-32 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:border-red-500">
                                 <option value="+39" selected>🇮🇹 +39</option>
                                 <option value="+41">🇨🇭 +41</option>
                                 <option value="+33">🇫🇷 +33</option>
+                                <option value="+49">🇩🇪 +49</option>
+                                <option value="+34">🇪🇸 +34</option>
+                                <option value="+44">🇬🇧 +44</option>
+                                <option value="+43">🇦🇹 +43</option>
+                                <option value="+32">🇧🇪 +32</option>
+                                <option value="+31">🇳🇱 +31</option>
+                                <option value="+351">🇵🇹 +351</option>
+                                <option value="+30">🇬🇷 +30</option>
+                                <option value="+1">🇺🇸 +1</option>
+                                <option value="manual">➕ Altro...</option>
                             </select>
-                            <input type="tel" id="cell" required inputmode="tel" class="touch-target flex-1 px-4 bg-white/60 border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Cellulare">
+                            <input type="text" id="manualCell" placeholder="+00" class="hidden w-20 p-3 bg-white border border-red-200 rounded-2xl outline-none font-bold text-sm">
+                            <input type="tel" id="cell" required inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Numero Cellulare">
                         </div>
-                        <div class="flex gap-1">
-                            <select id="prefixTel" class="touch-target bg-white/60 border border-slate-200 rounded-2xl px-2 font-bold text-xs outline-none">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="flex flex-1 gap-2">
+                            <select id="prefixTel" onchange="toggleManual('prefixTel', 'manualTel')" class="w-32 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:border-red-500">
                                 <option value="+39" selected>🇮🇹 +39</option>
-                                <option value="+00">🌍 +??</option>
+                                <option value="+41">🇨🇭 +41</option>
+                                <option value="manual">➕ Altro...</option>
                             </select>
-                            <input type="tel" id="tel" inputmode="tel" class="touch-target flex-1 px-4 bg-white/60 border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Fisso">
+                            <input type="text" id="manualTel" placeholder="+00" class="hidden w-20 p-3 bg-white border border-red-200 rounded-2xl outline-none font-bold text-sm">
+                            <input type="tel" id="tel" inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Numero Fisso">
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-red-600 uppercase mb-1 ml-2">Di cosa ti occupi?</label>
-                        <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white/60 border border-slate-200 rounded-2xl outline-none focus:border-red-500 resize-none" placeholder="Descrizione settore..."></textarea>
+                        <label class="block text-[10px] font-black text-red-600 uppercase mb-1 ml-2 italic">Di cosa ti occupi?</label>
+                        <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Dettagli attività..."></textarea>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-red-600 uppercase mb-1 ml-2">Cosa cerchi da Rivit?</label>
-                        <textarea id="cerco" rows="2" required class="w-full p-4 bg-white/60 border border-slate-200 rounded-2xl outline-none focus:border-red-500 resize-none" placeholder="Richieste specifiche..."></textarea>
+                        <label class="block text-[10px] font-black text-red-600 uppercase mb-1 ml-2 italic">Cosa cerchi da Rivit?</label>
+                        <textarea id="cerco" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Esigenze o prodotti..."></textarea>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="touch-target w-full bg-red-600 text-white font-black rounded-2xl shadow-xl hover:bg-red-700 active:scale-95 transition-all flex justify-center items-center gap-3 uppercase tracking-tighter">
-                    <i class="fas fa-paper-plane"></i> Invia nel Cloud
+                <button type="submit" id="submitBtn" class="w-full py-4 bg-red-600 text-white font-black rounded-2xl shadow-xl shadow-red-200 active:scale-95 transition-all flex justify-center items-center gap-3 uppercase tracking-widest text-sm">
+                    <i class="fas fa-cloud-arrow-up text-lg"></i> Salva Contatto Cloud
                 </button>
             </form>
+            
+            <button onclick="logout()" class="w-full mt-8 text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">Reset credenziali GitHub</button>
         </main>
         
-        <footer class="mt-6 text-center">
-            <button onclick="logout()" class="text-[9px] text-white/50 font-bold uppercase tracking-widest">Reset Config Cloud</button>
-        </footer>
-
-        <div id="setupArea" class="hidden mt-4 p-6 glass-panel rounded-3xl border-2 border-dashed border-red-300">
-            <input type="password" id="ghToken" placeholder="GitHub Token" class="w-full mb-2 p-3 rounded-xl border">
-            <input type="text" id="ghRepo" placeholder="utente/repo" class="w-full mb-3 p-3 rounded-xl border">
-            <button onclick="saveSetup()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold">CONFIGURA</button>
+        <div id="setupArea" class="hidden mt-6 p-6 glass-panel rounded-3xl border-2 border-dashed border-red-300">
+            <h3 class="text-xs font-bold mb-4 uppercase text-center">Configurazione Accesso Cloud</h3>
+            <input type="password" id="ghToken" placeholder="Personal Access Token" class="w-full mb-3 p-3 rounded-xl border border-slate-200">
+            <input type="text" id="ghRepo" placeholder="utente/nome-repository" class="w-full mb-4 p-3 rounded-xl border border-slate-200">
+            <button onclick="saveSetup()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold uppercase text-xs">Connetti Ora</button>
         </div>
     </div>
 
     <script>
-        // Logica Javascript identica alla precedente, aggiunta gestione doppia etichetta status
         let config = JSON.parse(localStorage.getItem('gh_crm_config'));
         let fileSha = "";
         let allContacts = [];
@@ -156,13 +153,23 @@
             document.getElementById('mainApp').classList.add('hidden');
         }
 
+        function toggleManual(selectId, manualId) {
+            const select = document.getElementById(selectId);
+            const manual = document.getElementById(manualId);
+            if (select.value === "manual") {
+                manual.classList.remove('hidden');
+                select.classList.add('hidden');
+                manual.focus();
+            }
+        }
+
         function setStatus(text, color, isSyncing = false) {
-            const dots = [document.getElementById('statusDot'), document.getElementById('statusDotMobile')];
-            const texts = [document.getElementById('statusText'), document.getElementById('statusTextMobile')];
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            txt.innerText = text;
+            txt.className = `text-[10px] font-bold uppercase ${isSyncing ? "syncing" : ""} text-slate-500`;
             const colors = { blue: "bg-blue-500", green: "bg-green-500", red: "bg-red-500" };
-            
-            dots.forEach(d => { if(d) d.className = `status-dot ${colors[color] || "bg-slate-300"} ${isSyncing ? "syncing" : ""}`; });
-            texts.forEach(t => { if(t) t.innerText = text; });
+            dot.className = `status-dot ${colors[color] || "bg-slate-300"}`;
         }
 
         function saveSetup() {
@@ -174,11 +181,11 @@
             }
         }
 
-        function logout() { if(confirm("Resettare l'accesso?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
+        function logout() { if(confirm("Cancellare accesso cloud?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
 
         async function ghFetch() {
             if (!config) return;
-            setStatus("Sync...", "blue", true);
+            setStatus("Sincronizzazione...", "blue", true);
             const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
             try {
                 const res = await fetch(url, { headers: { "Authorization": `token ${config.token}` }, cache: 'no-store' });
@@ -186,17 +193,17 @@
                     const data = await res.json();
                     fileSha = data.sha;
                     allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-                    setStatus("Online", "green");
+                    setStatus("Cloud Attivo", "green");
                 }
-            } catch (e) { setStatus("Errore", "red"); }
+            } catch (e) { setStatus("Errore Connessione", "red"); }
         }
 
         async function ghPush(newData) {
-            setStatus("Salvataggio...", "blue", true);
+            setStatus("Invio dati...", "blue", true);
             const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
             allContacts.unshift(newData);
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts, null, 2))));
-            const body = { message: `Rivit CRM: ${newData.nomeCognome}`, content, sha: fileSha };
+            const body = { message: `Nuovo Contatto: ${newData.nomeCognome}`, content, sha: fileSha };
             
             try {
                 const res = await fetch(url, {
@@ -207,21 +214,31 @@
                 if (res.ok) {
                     const data = await res.json();
                     fileSha = data.content.sha;
-                    setStatus("Salvato", "green");
-                    alert("✅ Dati archiviati correttamente.");
+                    setStatus("Dati Salvati", "green");
+                    alert("✅ Contatto registrato correttamente nel cloud RIVIT.");
                     document.getElementById('contactForm').reset();
+                    // Reset prefissi manuali
+                    document.getElementById('manualCell').classList.add('hidden');
+                    document.getElementById('prefixCell').classList.remove('hidden');
+                    document.getElementById('prefixCell').value = "+39";
                 }
             } catch(e) { setStatus("Fallito", "red"); }
         }
 
         document.getElementById('contactForm').onsubmit = async (e) => {
             e.preventDefault();
+            
+            const prefCell = document.getElementById('prefixCell').value === "manual" ? 
+                             document.getElementById('manualCell').value : document.getElementById('prefixCell').value;
+            const prefTel = document.getElementById('prefixTel').value === "manual" ? 
+                            document.getElementById('manualTel').value : document.getElementById('prefixTel').value;
+
             const data = {
                 azienda: document.getElementById('azienda').value,
                 nomeCognome: document.getElementById('nomeCognome').value,
                 indirizzo: document.getElementById('indirizzo').value,
-                cell: document.getElementById('prefixCell').value + " " + document.getElementById('cell').value,
-                tel: document.getElementById('prefixTel').value + " " + document.getElementById('tel').value,
+                cell: prefCell + " " + document.getElementById('cell').value,
+                tel: prefTel + " " + document.getElementById('tel').value,
                 occupazione: document.getElementById('occupazione').value,
                 cerco: document.getElementById('cerco').value,
                 timestamp: new Date().toLocaleString('it-IT')
