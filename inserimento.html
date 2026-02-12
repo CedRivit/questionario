@@ -8,159 +8,114 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         input, textarea, select { font-size: 16px !important; }
-        body { 
-            background-image: url('intro.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            min-height: 100vh;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
+        body { background-image: url('intro.jpg'); background-size: cover; background-position: center; background-attachment: fixed; min-height: 100vh; }
+        .glass-panel { background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); }
         .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .syncing { animation: pulse 1.5s infinite; }
-        .input-focus:focus-within { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2); }
     </style>
 </head>
 <body class="font-sans text-slate-900 antialiased">
 
     <div class="w-full max-w-2xl mx-auto p-3 sm:p-6 lg:p-8">
-        
         <header class="mb-6">
             <div class="glass-panel p-4 sm:p-6 rounded-[2rem] shadow-2xl border-b-4 border-red-600 flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <img src="FOTO1.jpg" alt="Logo" class="h-10 sm:h-14 w-auto">
                     <h1 class="text-xl sm:text-2xl font-black tracking-tighter">RIVIT S.p.A SB</h1>
                 </div>
-                <div id="statusContainer" class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200">
                     <span id="statusDot" class="status-dot bg-slate-300"></span>
-                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500">Cloud Offline</span>
+                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
                 </div>
-            </div>
-            <div class="mt-4 px-2">
-                <a href="index.html" class="inline-flex items-center gap-2 bg-slate-900/70 text-white text-[11px] font-bold py-2 px-5 rounded-full backdrop-blur uppercase">
-                    <i class="fas fa-chevron-left"></i> Torna al Menù
-                </a>
             </div>
         </header>
 
         <main class="glass-panel p-5 sm:p-8 rounded-[2.5rem] shadow-2xl">
             <form id="contactForm" class="space-y-6">
-                
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="sm:col-span-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Azienda</label>
-                        <div class="relative flex items-center input-focus border border-slate-200 rounded-2xl bg-white transition-all">
-                            <i class="fas fa-building absolute left-4 text-slate-300"></i>
-                            <input type="text" id="azienda" required class="w-full pl-12 pr-4 py-3 bg-transparent outline-none" placeholder="Ragione Sociale">
-                        </div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1">Azienda</label>
+                        <input type="text" id="azienda" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Ragione Sociale">
                     </div>
-
                     <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Referente</label>
-                        <div class="relative flex items-center input-focus border border-slate-200 rounded-2xl bg-white transition-all">
-                            <i class="fas fa-user absolute left-4 text-slate-300"></i>
-                            <input type="text" id="nomeCognome" required class="w-full pl-12 pr-4 py-3 bg-transparent outline-none" placeholder="Nome e Cognome">
-                        </div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1">Referente</label>
+                        <input type="text" id="nomeCognome" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Nome e Cognome">
                     </div>
-
                     <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Città</label>
-                        <div class="relative flex items-center input-focus border border-slate-200 rounded-2xl bg-white transition-all">
-                            <i class="fas fa-map-marker-alt absolute left-4 text-slate-300"></i>
-                            <input type="text" id="indirizzo" required class="w-full pl-12 pr-4 py-3 bg-transparent outline-none" placeholder="Es: Bologna (BO)">
-                        </div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1">Città</label>
+                        <input type="text" id="indirizzo" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Località">
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-[-8px] italic">Recapiti Telefonici</label>
-                    
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <div class="flex flex-1 gap-2">
-                            <select id="prefixCell" onchange="toggleManual('prefixCell', 'manualCell')" class="w-32 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:border-red-500">
-                                <option value="+39" selected>🇮🇹 +39</option>
-                                <option value="+41">🇨🇭 +41</option>
-                                <option value="+33">🇫🇷 +33</option>
-                                <option value="+49">🇩🇪 +49</option>
-                                <option value="+34">🇪🇸 +34</option>
-                                <option value="+44">🇬🇧 +44</option>
-                                <option value="+43">🇦🇹 +43</option>
-                                <option value="+32">🇧🇪 +32</option>
-                                <option value="+31">🇳🇱 +31</option>
-                                <option value="+351">🇵🇹 +351</option>
-                                <option value="+30">🇬🇷 +30</option>
-                                <option value="+1">🇺🇸 +1</option>
-                                <option value="manual">➕ Altro...</option>
-                            </select>
-                            <input type="text" id="manualCell" placeholder="+00" class="hidden w-20 p-3 bg-white border border-red-200 rounded-2xl outline-none font-bold text-sm">
-                            <input type="tel" id="cell" required inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Numero Cellulare">
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <div class="flex flex-1 gap-2">
-                            <select id="prefixTel" onchange="toggleManual('prefixTel', 'manualTel')" class="w-32 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-sm outline-none focus:border-red-500">
-                                <option value="+39" selected>🇮🇹 +39</option>
-                                <option value="+41">🇨🇭 +41</option>
-                                <option value="manual">➕ Altro...</option>
-                            </select>
-                            <input type="text" id="manualTel" placeholder="+00" class="hidden w-20 p-3 bg-white border border-red-200 rounded-2xl outline-none font-bold text-sm">
-                            <input type="tel" id="tel" inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Numero Fisso">
+                <div class="p-4 border-2 border-dashed border-slate-200 rounded-3xl bg-white/50">
+                    <label class="block text-[10px] font-black text-red-600 uppercase mb-3 text-center tracking-widest">Allegato Fotografico</label>
+                    <div class="flex flex-col items-center gap-3">
+                        <input type="file" id="fotoInput" accept="image/*" capture="environment" class="hidden">
+                        <button type="button" onclick="document.getElementById('fotoInput').click()" class="bg-slate-800 text-white px-8 py-3 rounded-full text-xs font-bold uppercase flex items-center gap-2 active:scale-95 transition-all">
+                            <i class="fas fa-camera text-lg"></i> Scatta Foto Biglietto
+                        </button>
+                        <div id="previewArea" class="hidden w-full max-w-[200px] relative">
+                            <img id="imgPreview" src="" class="w-full rounded-2xl border-4 border-white shadow-md">
+                            <button type="button" onclick="resetFoto()" class="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6 rounded-full text-[10px]"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-red-600 uppercase mb-1 ml-2 italic">Di cosa ti occupi?</label>
-                        <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Dettagli attività..."></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-red-600 uppercase mb-1 ml-2 italic">Cosa cerchi da Rivit?</label>
-                        <textarea id="cerco" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Esigenze o prodotti..."></textarea>
-                    </div>
+                    <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Di cosa si occupa?"></textarea>
+                    <textarea id="cerco" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Cosa cerca da noi?"></textarea>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full py-4 bg-red-600 text-white font-black rounded-2xl shadow-xl shadow-red-200 active:scale-95 transition-all flex justify-center items-center gap-3 uppercase tracking-widest text-sm">
-                    <i class="fas fa-cloud-arrow-up text-lg"></i> Salva Contatto Cloud
+                <button type="submit" id="submitBtn" class="w-full py-4 bg-red-600 text-white font-black rounded-2xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-3 uppercase tracking-widest">
+                    <i class="fas fa-cloud-upload-alt"></i> Salva Contatto e Foto
                 </button>
             </form>
-            
-            <button onclick="logout()" class="w-full mt-8 text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">Reset credenziali GitHub</button>
         </main>
-        
-        <div id="setupArea" class="hidden mt-6 p-6 glass-panel rounded-3xl border-2 border-dashed border-red-300">
-            <h3 class="text-xs font-bold mb-4 uppercase text-center">Configurazione Accesso Cloud</h3>
-            <input type="password" id="ghToken" placeholder="Personal Access Token" class="w-full mb-3 p-3 rounded-xl border border-slate-200">
-            <input type="text" id="ghRepo" placeholder="utente/nome-repository" class="w-full mb-4 p-3 rounded-xl border border-slate-200">
-            <button onclick="saveSetup()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold uppercase text-xs">Connetti Ora</button>
-        </div>
     </div>
 
     <script>
         let config = JSON.parse(localStorage.getItem('gh_crm_config'));
         let fileSha = "";
         let allContacts = [];
+        let compressedImageBase64 = "";
 
-        if (!config) {
-            document.getElementById('setupArea').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
-        }
+        // Gestione Foto e Compressione
+        document.getElementById('fotoInput').onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1000; // Ottimo per biglietti da visita
+                    let width = img.width;
+                    let height = img.height;
 
-        function toggleManual(selectId, manualId) {
-            const select = document.getElementById(selectId);
-            const manual = document.getElementById(manualId);
-            if (select.value === "manual") {
-                manual.classList.remove('hidden');
-                select.classList.add('hidden');
-                manual.focus();
-            }
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    compressedImageBase64 = canvas.toDataURL('image/jpeg', 0.7); // 70% qualità
+                    document.getElementById('imgPreview').src = compressedImageBase64;
+                    document.getElementById('previewArea').classList.remove('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function resetFoto() {
+            compressedImageBase64 = "";
+            document.getElementById('fotoInput').value = "";
+            document.getElementById('previewArea').classList.add('hidden');
         }
 
         function setStatus(text, color, isSyncing = false) {
@@ -171,17 +126,6 @@
             const colors = { blue: "bg-blue-500", green: "bg-green-500", red: "bg-red-500" };
             dot.className = `status-dot ${colors[color] || "bg-slate-300"}`;
         }
-
-        function saveSetup() {
-            const token = document.getElementById('ghToken').value.trim();
-            const repo = document.getElementById('ghRepo').value.trim();
-            if(token && repo) {
-                localStorage.setItem('gh_crm_config', JSON.stringify({token, repo}));
-                location.reload();
-            }
-        }
-
-        function logout() { if(confirm("Cancellare accesso cloud?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
 
         async function ghFetch() {
             if (!config) return;
@@ -195,55 +139,64 @@
                     allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
                     setStatus("Cloud Attivo", "green");
                 }
-            } catch (e) { setStatus("Errore Connessione", "red"); }
+            } catch (e) { setStatus("Errore", "red"); }
         }
 
-        async function ghPush(newData) {
-            setStatus("Invio dati...", "blue", true);
-            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
-            allContacts.unshift(newData);
-            const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts, null, 2))));
-            const body = { message: `Nuovo Contatto: ${newData.nomeCognome}`, content, sha: fileSha };
+        async function uploadImage(fileName) {
+            if (!compressedImageBase64) return null;
+            const url = `https://api.github.com/repos/${config.repo}/contents/allegati/${fileName}`;
+            const content = compressedImageBase64.split(',')[1]; // Rimuove intestazione data:image...
             
-            try {
-                const res = await fetch(url, {
-                    method: "PUT",
-                    headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify(body)
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    fileSha = data.content.sha;
-                    setStatus("Dati Salvati", "green");
-                    alert("✅ Contatto registrato correttamente nel cloud RIVIT.");
-                    document.getElementById('contactForm').reset();
-                    // Reset prefissi manuali
-                    document.getElementById('manualCell').classList.add('hidden');
-                    document.getElementById('prefixCell').classList.remove('hidden');
-                    document.getElementById('prefixCell').value = "+39";
-                }
-            } catch(e) { setStatus("Fallito", "red"); }
+            const body = { message: `Caricamento foto: ${fileName}`, content };
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            return res.ok;
         }
 
         document.getElementById('contactForm').onsubmit = async (e) => {
             e.preventDefault();
+            setStatus("Invio in corso...", "blue", true);
             
-            const prefCell = document.getElementById('prefixCell').value === "manual" ? 
-                             document.getElementById('manualCell').value : document.getElementById('prefixCell').value;
-            const prefTel = document.getElementById('prefixTel').value === "manual" ? 
-                            document.getElementById('manualTel').value : document.getElementById('prefixTel').value;
+            let photoFileName = "";
+            if (compressedImageBase64) {
+                photoFileName = `IMG_${Date.now()}.jpg`;
+                const photoOk = await uploadImage(photoFileName);
+                if (!photoOk) { alert("Errore nel caricamento della foto"); return; }
+            }
 
             const data = {
                 azienda: document.getElementById('azienda').value,
                 nomeCognome: document.getElementById('nomeCognome').value,
                 indirizzo: document.getElementById('indirizzo').value,
-                cell: prefCell + " " + document.getElementById('cell').value,
-                tel: prefTel + " " + document.getElementById('tel').value,
+                cell: document.getElementById('cell') ? document.getElementById('cell').value : "",
                 occupazione: document.getElementById('occupazione').value,
                 cerco: document.getElementById('cerco').value,
+                foto: photoFileName, // Salviamo solo il nome del file!
                 timestamp: new Date().toLocaleString('it-IT')
             };
-            await ghPush(data);
+
+            allContacts.unshift(data);
+            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts, null, 2))));
+            const body = { message: `Nuovo Contatto: ${data.nomeCognome}`, content, sha: fileSha };
+            
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                const resData = await res.json();
+                fileSha = resData.content.sha;
+                setStatus("Dati Salvati", "green");
+                alert("✅ Contatto e Foto salvati correttamente!");
+                document.getElementById('contactForm').reset();
+                resetFoto();
+            }
         };
 
         if (config) ghFetch();
