@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "azienda": "acme",
+    "nomeCognome": "Andrei Perboschi",
+    "indirizzo": "la susulemontagne",
+    "cell": "123 445556666 ",
+    "tel": "45567 67687889",
+    "occupazione": "Spionaggio",
+    "cerco": "la verità ",
+    "timestamp": "12/02/2026, 08:38:42"
+  }
+]
