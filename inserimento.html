@@ -52,54 +52,52 @@
 
                 <div class="space-y-4">
                     <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-[-8px] italic tracking-widest">Recapiti Telefonici</label>
+                    
+                    <script>
+                        const nazioni = [
+                            {n: "Italia", p: "+39", f: "🇮🇹"}, {n: "Albania", p: "+355", f: "🇦🇱"}, {n: "Algeria", p: "+213", f: "🇩🇿"},
+                            {n: "Andorra", p: "+376", f: "🇦🇩"}, {n: "Angola", p: "+244", f: "🇦🇴"}, {n: "Argentina", p: "+54", f: "🇦🇷"},
+                            {n: "Armenia", p: "+374", f: "🇦🇲"}, {n: "Australia", p: "+61", f: "🇦🇺"}, {n: "Austria", p: "+43", f: "🇦🇹"},
+                            {n: "Belgio", p: "+32", f: "🇧🇪"}, {n: "Bosnia", p: "+387", f: "🇧🇦"}, {n: "Brasile", p: "+55", f: "🇧🇷"},
+                            {n: "Bulgaria", p: "+359", f: "🇧🇬"}, {n: "Canada", p: "+1", f: "🇨🇦"}, {n: "Cile", p: "+56", f: "🇨🇱"},
+                            {n: "Cina", p: "+86", f: "🇨🇳"}, {n: "Cipro", p: "+357", f: "🇨🇾"}, {n: "Colombia", p: "+57", f: "🇨🇴"},
+                            {n: "Corea Sud", p: "+82", f: "🇰🇷"}, {n: "Croazia", p: "+385", f: "🇭🇷"}, {n: "Danimarca", p: "+45", f: "🇩🇰"},
+                            {n: "Egitto", p: "+20", f: "🇪🇬"}, {n: "Emirati Arabi", p: "+971", f: "🇦🇪"}, {n: "Estonia", p: "+372", f: "🇪🇪"},
+                            {n: "Finlandia", p: "+358", f: "🇫🇮"}, {n: "Francia", p: "+33", f: "🇫🇷"}, {n: "Georgia", p: "+995", f: "🇬🇪"},
+                            {n: "Germania", p: "+49", f: "🇩🇪"}, {n: "Giappone", p: "+81", f: "🇯🇵"}, {n: "Giordania", p: "+962", f: "🇯🇴"},
+                            {n: "Grecia", p: "+30", f: "🇬🇷"}, {n: "Hong Kong", p: "+852", f: "🇭🇰"}, {n: "India", p: "+91", f: "🇮🇳"},
+                            {n: "Irlanda", p: "+353", f: "🇮🇪"}, {n: "Islanda", p: "+354", f: "🇮🇸"}, {n: "Israele", p: "+972", f: "🇮🇱"},
+                            {n: "Kuwait", p: "+965", f: "🇰🇼"}, {n: "Lettonia", p: "+371", f: "🇱🇻"}, {n: "Libano", p: "+961", f: "🇱🇧"},
+                            {n: "Liechtenstein", p: "+423", f: "🇱🇮"}, {n: "Lituania", p: "+370", f: "🇱🇹"}, {n: "Lussemburgo", p: "+352", f: "🇱🇺"},
+                            {n: "Malta", p: "+356", f: "🇲🇹"}, {n: "Marocco", p: "+212", f: "🇲🇦"}, {n: "Messico", p: "+52", f: "🇲🇽"},
+                            {n: "Monaco", p: "+377", f: "🇲🇨"}, {n: "Montenegro", p: "+382", f: "🇲🇪"}, {n: "Norvegia", p: "+47", f: "🇳🇴"},
+                            {n: "Nuova Zelanda", p: "+64", f: "🇳🇿"}, {n: "Paesi Bassi", p: "+31", f: "🇳🇱"}, {n: "Perù", p: "+51", f: "🇵🇪"},
+                            {n: "Polonia", p: "+48", f: "🇵🇱"}, {n: "Portogallo", p: "+351", f: "🇵🇹"}, {n: "Qatar", p: "+974", f: "🇶🇦"},
+                            {n: "Regno Unito", p: "+44", f: "🇬🇧"}, {n: "Rep. Ceca", p: "+420", f: "🇨🇿"}, {n: "Romania", p: "+40", f: "🇷🇴"},
+                            {n: "San Marino", p: "+378", f: "🇸🇲"}, {n: "Saudita", p: "+966", f: "🇸🇦"}, {n: "Serbia", p: "+381", f: "🇷🇸"},
+                            {n: "Singapore", p: "+65", f: "🇸🇬"}, {n: "Slovacchia", p: "+421", f: "🇸🇰"}, {n: "Slovenia", p: "+386", f: "🇸🇮"},
+                            {n: "Spagna", p: "+34", f: "🇪🇸"}, {n: "Stati Uniti", p: "+1", f: "🇺🇸"}, {n: "Sudafrica", p: "+27", f: "🇿🇦"},
+                            {n: "Svezia", p: "+46", f: "🇸🇪"}, {n: "Svizzera", p: "+41", f: "🇨🇭"}, {n: "Thailandia", p: "+66", f: "🇹🇭"},
+                            {n: "Tunisia", p: "+216", f: "🇹🇳"}, {n: "Turchia", p: "+90", f: "🇹🇷"}, {n: "Ucraina", p: "+380", f: "🇺🇦"},
+                            {n: "Ungheria", p: "+36", f: "🇭🇺"}, {n: "Uruguay", p: "+598", f: "🇺🇾"}
+                        ];
+                        const renderOptions = () => nazioni.map(x => `<option value="${x.p}">${x.f} ${x.n} (${x.p})</option>`).join('') + `<option value="manual">➕ Altro...</option>`;
+                    </script>
+
                     <div class="flex flex-col sm:flex-row gap-2">
                         <div class="flex flex-1 gap-2">
                             <select id="prefixCell" onchange="toggleManual('prefixCell', 'manualCell')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none focus:border-red-500">
-                                <option value="+39" selected>🇮🇹 Italia (+39)</option>
-                                <option value="+1">🇺🇸 USA (+1)</option>
-                                <option value="+44">🇬🇧 UK (+44)</option>
-                                <option value="+33">🇫🇷 Francia (+33)</option>
-                                <option value="+49">🇩🇪 Germania (+49)</option>
-                                <option value="+34">🇪🇸 Spagna (+34)</option>
-                                <option value="+41">🇨🇭 Svizzera (+41)</option>
-                                <option value="+355">🇦🇱 Albania (+355)</option>
-                                <option value="+61">🇦🇺 Australia (+61)</option>
-                                <option value="+43">🇦🇹 Austria (+43)</option>
-                                <option value="+32">🇧🇪 Belgio (+32)</option>
-                                <option value="+55">🇧🇷 Brasile (+55)</option>
-                                <option value="+86">🇨🇳 Cina (+86)</option>
-                                <option value="+385">🇭🇷 Croazia (+385)</option>
-                                <option value="+20">🇪🇬 Egitto (+20)</option>
-                                <option value="+971">🇦🇪 Emirati Arabi (+971)</option>
-                                <option value="+81">🇯🇵 Giappone (+81)</option>
-                                <option value="+30">🇬🇷 Grecia (+30)</option>
-                                <option value="+91">🇮🇳 India (+91)</option>
-                                <option value="+353">🇮🇪 Irlanda (+353)</option>
-                                <option value="+212">🇲🇦 Marocco (+212)</option>
-                                <option value="+47">🇳🇴 Norvegia (+47)</option>
-                                <option value="+31">🇳🇱 Paesi Bassi (+31)</option>
-                                <option value="+48">🇵🇱 Polonia (+48)</option>
-                                <option value="+351">🇵🇹 Portogallo (+351)</option>
-                                <option value="+420">🇨🇿 Rep. Ceca (+420)</option>
-                                <option value="+40">🇷🇴 Romania (+40)</option>
-                                <option value="+378">🇸🇲 San Marino (+378)</option>
-                                <option value="+381">🇷🇸 Serbia (+381)</option>
-                                <option value="+386">🇸🇮 Slovenia (+386)</option>
-                                <option value="+46">🇸🇪 Svezia (+46)</option>
-                                <option value="+90">🇹🇷 Turchia (+90)</option>
-                                <option value="+36">🇭🇺 Ungheria (+36)</option>
-                                <option value="manual">➕ Altro...</option>
+                                <script>document.write(renderOptions());</script>
                             </select>
                             <input type="text" id="manualCell" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
                             <input type="tel" id="cell" required inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Cellulare">
                         </div>
                     </div>
+
                     <div class="flex flex-col sm:flex-row gap-2">
                         <div class="flex flex-1 gap-2">
                             <select id="prefixTel" onchange="toggleManual('prefixTel', 'manualTel')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none focus:border-red-500">
-                                <option value="+39" selected>🇮🇹 Italia (+39)</option>
-                                <option value="+41">🇨🇭 Svizzera (+41)</option>
-                                <option value="manual">➕ Altro...</option>
+                                <script>document.write(renderOptions());</script>
                             </select>
                             <input type="text" id="manualTel" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
                             <input type="tel" id="tel" inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Fisso Azienda">
@@ -108,14 +106,8 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic tracking-widest">Di cosa si occupa?</label>
-                        <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Dettagli attività..."></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic tracking-widest">Cosa cerchi da Rivit?</label>
-                        <textarea id="cerco" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Richieste specifiche..."></textarea>
-                    </div>
+                    <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Di cosa si occupa?"></textarea>
+                    <textarea id="cerco" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Cosa cerca da Rivit?"></textarea>
                 </div>
 
                 <div class="p-4 border-2 border-dashed border-red-100 rounded-3xl bg-red-50/30">
@@ -125,27 +117,28 @@
                         <button type="button" onclick="document.getElementById('fotoInput').click()" class="bg-slate-800 text-white px-8 py-3 rounded-full text-[10px] font-black uppercase flex items-center gap-2 active:scale-95 transition-all shadow-md">
                             <i class="fas fa-camera text-sm"></i> Scatta Foto Biglietto
                         </button>
-                        <div id="previewArea" class="hidden w-full max-w-[200px] relative mt-2 animate-pulse">
+                        <div id="previewArea" class="hidden w-full max-w-[200px] relative mt-2">
                             <img id="imgPreview" src="" class="w-full rounded-2xl border-4 border-white shadow-xl">
                             <button type="button" onclick="resetFoto()" class="absolute -top-3 -right-3 bg-red-600 text-white w-7 h-7 rounded-full text-[12px] shadow-lg flex items-center justify-center"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full py-5 bg-red-600 text-white font-black rounded-3xl shadow-2xl shadow-red-200 active:scale-95 transition-all flex justify-center items-center gap-4 uppercase tracking-[0.1em] text-sm">
-                    <i class="fas fa-paper-plane"></i> Salva Contatto Cloud
-                </button>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="button" onclick="location.reload()" class="w-full sm:w-1/3 py-4 bg-slate-200 text-slate-600 font-black rounded-3xl active:scale-95 transition-all uppercase tracking-widest text-xs">
+                        Annulla
+                    </button>
+                    <button type="submit" id="submitBtn" class="w-full sm:w-2/3 py-5 bg-red-600 text-white font-black rounded-3xl shadow-2xl shadow-red-200 active:scale-95 transition-all flex justify-center items-center gap-4 uppercase tracking-[0.1em] text-sm">
+                        <i class="fas fa-paper-plane"></i> Salva Contatto
+                    </button>
+                </div>
             </form>
-            
-            <button onclick="logout()" class="w-full mt-10 text-[9px] text-slate-300 font-bold uppercase tracking-widest hover:text-red-400 transition-colors">Reset credenziali GitHub</button>
         </main>
     </div>
 
     <script>
         let config = JSON.parse(localStorage.getItem('gh_crm_config'));
-        let fileSha = "";
-        let allContacts = [];
-        let compressedImageBase64 = "";
+        let fileSha = ""; let allContacts = []; let compressedImageBase64 = "";
 
         function toggleManual(selectId, manualId) {
             const select = document.getElementById(selectId);
@@ -168,7 +161,6 @@
                     compressedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
                     document.getElementById('imgPreview').src = compressedImageBase64;
                     document.getElementById('previewArea').classList.remove('hidden');
-                    document.getElementById('previewArea').classList.remove('animate-pulse');
                 }
             };
             reader.readAsDataURL(file);
@@ -176,17 +168,8 @@
 
         function resetFoto() { compressedImageBase64 = ""; document.getElementById('fotoInput').value = ""; document.getElementById('previewArea').classList.add('hidden'); }
 
-        function setStatus(text, color, isSyncing = false) {
-            const dot = document.getElementById('statusDot');
-            const txt = document.getElementById('statusText');
-            txt.innerText = text;
-            const colors = { blue: "bg-blue-500", green: "bg-green-500", red: "bg-red-500" };
-            dot.className = `status-dot ${colors[color] || "bg-slate-300"} ${isSyncing ? "syncing" : ""}`;
-        }
-
         async function ghFetch() {
             if (!config) return;
-            setStatus("Sincronizzazione...", "blue", true);
             const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
             try {
                 const res = await fetch(url, { headers: { "Authorization": `token ${config.token}` }, cache: 'no-store' });
@@ -194,9 +177,10 @@
                     const data = await res.json();
                     fileSha = data.sha;
                     allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-                    setStatus("Cloud Attivo", "green");
+                    document.getElementById('statusDot').className = "status-dot bg-green-500";
+                    document.getElementById('statusText').innerText = "Cloud Attivo";
                 }
-            } catch (e) { setStatus("Errore", "red"); }
+            } catch (e) { console.error(e); }
         }
 
         async function uploadImage(fileName) {
@@ -209,7 +193,8 @@
 
         document.getElementById('contactForm').onsubmit = async (e) => {
             e.preventDefault();
-            setStatus("Salvataggio...", "blue", true);
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; btn.innerText = "SALVATAGGIO...";
             
             const prefCell = document.getElementById('prefixCell').classList.contains('hidden') ? document.getElementById('manualCell').value : document.getElementById('prefixCell').value;
             const prefTel = document.getElementById('prefixTel').classList.contains('hidden') ? document.getElementById('manualTel').value : document.getElementById('prefixTel').value;
@@ -218,7 +203,7 @@
             if (compressedImageBase64) {
                 photoFileName = `IMG_${Date.now()}.jpg`;
                 const photoOk = await uploadImage(photoFileName);
-                if (!photoOk) { alert("Errore caricamento foto"); return; }
+                if (!photoOk) { alert("Errore foto"); btn.disabled = false; return; }
             }
 
             const data = {
@@ -236,16 +221,14 @@
             allContacts.unshift(data);
             const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts, null, 2))));
-            const body = { message: `Nuovo Contatto: ${data.nomeCognome}`, content, sha: fileSha };
+            const body = { message: `Inserimento: ${data.nomeCognome}`, content, sha: fileSha };
             
             const res = await fetch(url, { method: "PUT", headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" }, body: JSON.stringify(body) });
-
-            if (res.ok) { alert("✅ Dati e foto archiviati correttamente!"); location.reload(); }
-            else { setStatus("Errore Invio", "red"); }
+            if (res.ok) { alert("✅ Successo!"); location.reload(); } else { alert("Errore invio"); btn.disabled = false; }
         };
 
         if (config) ghFetch();
-        function logout() { if(confirm("Cancellare accesso cloud?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
+        function logout() { if(confirm("Resettare cloud?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
     </script>
 </body>
 </html>
