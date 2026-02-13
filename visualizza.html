@@ -154,8 +154,8 @@ function renderTable() {
     }
 
     list.innerHTML = contacts.map(c => {
-        const fotoLink = c.foto && c.foto !== "" ? 
-            `<a href="allegati/${c.foto}" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+        const fotoLink = c.photo && c.photo !== "" ? 
+            `<a href="questionario/allegati/${c.photo}" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                 <i class="fas fa-image"></i>
             </a>` : 
             `<span class="text-slate-300 text-[10px] font-bold uppercase">No Photo</span>`;
@@ -163,14 +163,14 @@ function renderTable() {
         return `
         <tr class="hover:bg-slate-50 transition-colors">
             <td class="p-5 text-[11px] font-mono text-slate-400">${c.timestamp || '-'}</td>
-            <td class="p-5 font-black text-red-600 text-sm italic uppercase">${c.azienda}</td>
-            <td class="p-5 font-bold text-slate-700 text-sm">${c.nomeCognome}</td>
+            <td class="p-5 font-black text-red-600 text-sm italic uppercase">${c.company}</td>
+            <td class="p-5 font-bold text-slate-700 text-sm">${c.fullName}</td>
             <td class="p-5 text-[11px] text-slate-500 leading-tight">
-                <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${c.indirizzo || '-'}<br>
-                <i class="fas fa-phone text-slate-300 mr-1"></i> ${c.cell || c.tel || '-'}
+                <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${c.city || '-'}<br>
+                <i class="fas fa-phone text-slate-300 mr-1"></i> ${c.mobile || c.landline || '-'}
             </td>
             <td class="p-5 text-[11px] text-slate-600 max-w-xs truncate font-medium">
-                ${c.cerco || '-'}
+                ${c.lookingFor || '-'}
             </td>
             <td class="p-5 text-center">
                 ${fotoLink}
@@ -182,17 +182,19 @@ function renderTable() {
 
 function exportToExcel() {
     if (contacts.length === 0) { alert("No data to export"); return; }
-    const headers = ["Date", "Company", "Contact", "Address", "Phone", "Looking For", "Photo Filename"];
+    const headers = ["Date", "Company", "Full Name", "City", "Mobile", "Landline", "Activity", "Looking For", "Photo"];
     const csvRows = [
         headers.join(";"),
         ...contacts.map(c => [
             `"${c.timestamp}"`,
-            `"${c.azienda}"`,
-            `"${c.nomeCognome}"`,
-            `"${c.indirizzo}"`,
-            `"${c.cell || c.tel}"`,
-            `"${c.cerco.replace(/"/g, '""')}"`,
-            `"${c.foto || ''}"`
+            `"${c.company}"`,
+            `"${c.fullName}"`,
+            `"${c.city}"`,
+            `"${c.mobile}"`,
+            `"${c.landline}"`,
+            `"${c.activity}"`,
+            `"${c.lookingFor}"`,
+            `"${c.photo || ''}"`
         ].join(";"))
     ].join("\n");
 
