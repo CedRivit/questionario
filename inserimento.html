@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>RIVIT S.p.A SB - Inserimento</title>
+    <title>RIVIT S.p.A SB - Data Entry</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -37,7 +37,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="sm:col-span-2">
                         <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Company</label>
-                        <input type="text" id="azienda" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Business Name">
+                        <input type="text" id="azienda" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Company Name">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Contact Person</label>
@@ -51,25 +51,25 @@
 
                 <script>
                     const nazioniList = [
-                        {n: "Italia", p: "+39", f: "🇮🇹"}, {n: "Albania", p: "+355", f: "🇦🇱"}, {n: "Algeria", p: "+213", f: "🇩🇿"},
+                        {n: "Italy", p: "+39", f: "🇮🇹"}, {n: "Albania", p: "+355", f: "🇦🇱"}, {n: "Algeria", p: "+213", f: "🇩🇿"},
                         {n: "Andorra", p: "+376", f: "🇦🇩"}, {n: "Angola", p: "+244", f: "🇦🇴"}, {n: "Argentina", p: "+54", f: "🇦🇷"},
-                        {n: "Australia", p: "+61", f: "🇦🇺"}, {n: "Austria", p: "+43", f: "🇦🇹"}, {n: "Belgio", p: "+32", f: "🇧🇪"},
-                        {n: "Brasile", p: "+55", f: "🇧🇷"}, {n: "Bulgaria", p: "+359", f: "🇧🇬"}, {n: "Canada", p: "+1", f: "🇨🇦"},
-                        {n: "Cile", p: "+56", f: "🇨🇱"}, {n: "Cina", p: "+86", f: "🇨🇳"}, {n: "Cipro", p: "+357", f: "🇨🇾"},
-                        {n: "Croazia", p: "+385", f: "🇭🇷"}, {n: "Danimarca", p: "+45", f: "🇩🇰"}, {n: "Egitto", p: "+20", f: "🇪🇬"},
-                        {n: "Emirati Arabi", p: "+971", f: "🇦🇪"}, {n: "Finlandia", p: "+358", f: "🇫🇮"}, {n: "Francia", p: "+33", f: "🇫🇷"},
-                        {n: "Germania", p: "+49", f: "🇩🇪"}, {n: "Giappone", p: "+81", f: "🇯🇵"}, {n: "Grecia", p: "+30", f: "🇬🇷"},
-                        {n: "India", p: "+91", f: "🇮🇳"}, {n: "Irlanda", p: "+353", f: "🇮🇪"}, {n: "Israele", p: "+972", f: "🇮🇱"},
-                        {n: "Lussemburgo", p: "+352", f: "🇱🇺"}, {n: "Malta", p: "+356", f: "🇲🇹"}, {n: "Marocco", p: "+212", f: "🇲🇦"},
-                        {n: "Messico", p: "+52", f: "🇲🇽"}, {n: "Monaco", p: "+377", f: "🇲🇨"}, {n: "Norvegia", p: "+47", f: "🇳🇴"},
-                        {n: "Paesi Bassi", p: "+31", f: "🇳🇱"}, {n: "Polonia", p: "+48", f: "🇵🇱"}, {n: "Portogallo", p: "+351", f: "🇵🇹"},
-                        {n: "Regno Unito", p: "+44", f: "🇬🇧"}, {n: "Romania", p: "+40", f: "🇷🇴"}, {n: "San Marino", p: "+378", f: "🇸🇲"},
-                        {n: "Serbia", p: "+381", f: "🇷🇸"}, {n: "Slovenia", p: "+386", f: "🇸🇮"}, {n: "Spagna", p: "+34", f: "🇪🇸"},
-                        {n: "Stati Uniti", p: "+1", f: "🇺🇸"}, {n: "Svezia", p: "+46", f: "🇸🇪"}, {n: "Svizzera", p: "+41", f: "🇨🇭"},
-                        {n: "Tunisia", p: "+216", f: "🇹🇳"}, {n: "Turchia", p: "+90", f: "🇹🇷"}, {n: "Ungheria", p: "+36", f: "🇭🇺"}
+                        {n: "Australia", p: "+61", f: "🇦🇺"}, {n: "Austria", p: "+43", f: "🇦🇹"}, {n: "Belgium", p: "+32", f: "🇧🇪"},
+                        {n: "Brazil", p: "+55", f: "🇧🇷"}, {n: "Bulgaria", p: "+359", f: "🇧🇬"}, {n: "Canada", p: "+1", f: "🇨🇦"},
+                        {n: "Chile", p: "+56", f: "🇨🇱"}, {n: "China", p: "+86", f: "🇨🇳"}, {n: "Cyprus", p: "+357", f: "🇨🇾"},
+                        {n: "Croatia", p: "+385", f: "🇭🇷"}, {n: "Denmark", p: "+45", f: "🇩🇰"}, {n: "Egypt", p: "+20", f: "🇪🇬"},
+                        {n: "United Arab Emirates", p: "+971", f: "🇦🇪"}, {n: "Finland", p: "+358", f: "🇫🇮"}, {n: "France", p: "+33", f: "🇫🇷"},
+                        {n: "Germany", p: "+49", f: "🇩🇪"}, {n: "Japan", p: "+81", f: "🇯🇵"}, {n: "Greece", p: "+30", f: "🇬🇷"},
+                        {n: "India", p: "+91", f: "🇮🇳"}, {n: "Ireland", p: "+353", f: "🇮🇪"}, {n: "Israel", p: "+972", f: "🇮🇱"},
+                        {n: "Luxembourg", p: "+352", f: "🇱🇺"}, {n: "Malta", p: "+356", f: "🇲🇹"}, {n: "Morocco", p: "+212", f: "🇲🇦"},
+                        {n: "Mexico", p: "+52", f: "🇲🇽"}, {n: "Monaco", p: "+377", f: "🇲🇨"}, {n: "Norway", p: "+47", f: "🇳🇴"},
+                        {n: "Netherlands", p: "+31", f: "🇳🇱"}, {n: "Poland", p: "+48", f: "🇵🇱"}, {n: "Portugal", p: "+351", f: "🇵🇹"},
+                        {n: "United Kingdom", p: "+44", f: "🇬🇧"}, {n: "Romania", p: "+40", f: "🇷🇴"}, {n: "San Marino", p: "+378", f: "🇸🇲"},
+                        {n: "Serbia", p: "+381", f: "🇷🇸"}, {n: "Slovenia", p: "+386", f: "🇸🇮"}, {n: "Spain", p: "+34", f: "🇪🇸"},
+                        {n: "United States", p: "+1", f: "🇺🇸"}, {n: "Sweden", p: "+46", f: "🇸🇪"}, {n: "Switzerland", p: "+41", f: "🇨🇭"},
+                        {n: "Tunisia", p: "+216", f: "🇹🇳"}, {n: "Turkey", p: "+90", f: "🇹🇷"}, {n: "Hungary", p: "+36", f: "🇭🇺"}
                     ];
                     function getOptionsHtml() {
-                        return nazioniList.map(x => `<option value="${x.p}">${x.f} ${x.n} (${x.p})</option>`).join('') + `<option value="manual">➕ Altro...</option>`;
+                        return nazioniList.map(x => `<option value="${x.p}">${x.f} ${x.n} (${x.p})</option>`).join('') + `<option value="manual">➕ Other...</option>`;
                     }
                 </script>
 
@@ -90,13 +90,13 @@
                                 <script>document.write(getOptionsHtml());</script>
                             </select>
                             <input type="text" id="manualTel" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
-                            <input type="tel" id="tel" inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Company Landline">
+                            <input type="tel" id="tel" inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Office Phone">
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4">
-                    <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What is your activity?"></textarea>
+                    <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What is your business activity?"></textarea>
                     <textarea id="cerco" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What are you looking for from Rivit?"></textarea>
                 </div>
 
@@ -105,7 +105,7 @@
                     <div class="flex flex-col items-center gap-3">
                         <input type="file" id="fotoInput" accept="image/*" capture="environment" class="hidden">
                         <button type="button" onclick="document.getElementById('fotoInput').click()" class="bg-slate-800 text-white px-8 py-3 rounded-full text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">
-                            <i class="fas fa-camera text-sm"></i> Take Photo of Card
+                            <i class="fas fa-camera text-sm"></i> Take Photo of Business Card
                         </button>
                         <div id="previewArea" class="hidden w-full max-w-[200px] relative mt-2">
                             <img id="imgPreview" src="" class="w-full rounded-2xl border-4 border-white shadow-xl">
@@ -115,7 +115,7 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <button type="button" onclick="if(confirm('Annullare l\'inserimento?')) location.reload()" class="w-full sm:w-1/3 py-4 bg-slate-200 text-slate-600 font-black rounded-3xl uppercase tracking-widest text-xs">
+                    <button type="button" onclick="if(confirm('Cancel data entry?')) location.reload()" class="w-full sm:w-1/3 py-4 bg-slate-200 text-slate-600 font-black rounded-3xl uppercase tracking-widest text-xs">
                         Cancel
                     </button>
                     <button type="submit" id="submitBtn" class="w-full sm:w-2/3 py-5 bg-red-600 text-white font-black rounded-3xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-4 uppercase tracking-widest text-sm">
@@ -168,15 +168,15 @@
                     fileSha = data.sha;
                     allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
                     document.getElementById('statusDot').className = "status-dot bg-green-500";
-                    document.getElementById('statusText').innerText = "Cloud Attivo";
+                    document.getElementById('statusText').innerText = "Cloud Active";
                 }
-            } catch (e) { document.getElementById('statusText').innerText = "Errore Connessione"; }
+            } catch (e) { document.getElementById('statusText').innerText = "Connection Error"; }
         }
 
         async function uploadImage(fileName) {
             const url = `https://api.github.com/repos/${config.repo}/contents/allegati/${fileName}`;
             const content = compressedImageBase64.split(',')[1];
-            const body = { message: `Foto: ${fileName}`, content };
+            const body = { message: `Photo: ${fileName}`, content };
             const res = await fetch(url, { method: "PUT", headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" }, body: JSON.stringify(body) });
             return res.ok;
         }
@@ -184,7 +184,7 @@
         document.getElementById('contactForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.disabled = true; btn.innerHTML = "INVIO IN CORSO...";
+            btn.disabled = true; btn.innerHTML = "SENDING...";
             
             const prefCell = document.getElementById('prefixCell').classList.contains('hidden') ? document.getElementById('manualCell').value : document.getElementById('prefixCell').value;
             const prefTel = document.getElementById('prefixTel').classList.contains('hidden') ? document.getElementById('manualTel').value : document.getElementById('prefixTel').value;
@@ -193,7 +193,7 @@
             if (compressedImageBase64) {
                 photoFileName = `IMG_${Date.now()}.jpg`;
                 const photoOk = await uploadImage(photoFileName);
-                if (!photoOk) { alert("Errore caricamento foto"); btn.disabled = false; btn.innerText = "SALVA CONTATTO"; return; }
+                if (!photoOk) { alert("Error uploading photo"); btn.disabled = false; btn.innerText = "SAVE CONTACT"; return; }
             }
 
             const data = {
@@ -203,4 +203,28 @@
                 cell: prefCell + " " + document.getElementById('cell').value,
                 tel: prefTel + " " + document.getElementById('tel').value,
                 occupazione: document.getElementById('occupazione').value,
-                cerco: document.getElement
+                cerco: document.getElementById('cerco').value,
+                foto: photoFileName,
+                timestamp: new Date().toLocaleString('it-IT')
+            };
+
+            allContacts.unshift(data);
+            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts, null, 2))));
+            const body = { message: `Entry: ${data.nomeCognome}`, content, sha: fileSha };
+            
+            const res = await fetch(url, { method: "PUT", headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+            if (res.ok) { 
+                alert("Thank you for providing your details.\n\nOur sales department will contact you as soon as possible.\n\nRIVIT S.p.A SB"); 
+                location.reload(); 
+            } else { 
+                alert("Error sending data."); 
+                btn.disabled = false; btn.innerText = "SAVE CONTACT";
+            }
+        };
+
+        if (config) ghFetch();
+        function logout() { if(confirm("Reset cloud?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
+    </script>
+</body>
+</html>
