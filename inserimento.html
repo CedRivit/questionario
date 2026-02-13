@@ -16,7 +16,6 @@ body { background-image: url('intro.jpg'); background-size: cover; background-po
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:50;}
 </style>
 </head>
-
 <body class="font-sans text-slate-900 antialiased">
 
 <div class="w-full max-w-2xl mx-auto p-3 sm:p-6 lg:p-8">
@@ -121,36 +120,125 @@ Cancel
 
 <script>
 const SYSTEM_PIN="1234";
+let config = JSON.parse(localStorage.getItem("gh_crm_config")) || null;
+let allContacts = [];
+let compressedImageBase64 = "";
 
+// --- Modal Functions ---
 function openPin(){document.getElementById("pinModal").style.display="flex";}
 function closePin(){document.getElementById("pinModal").style.display="none";}
-function checkPin(){
-if(document.getElementById("pinInput").value===SYSTEM_PIN){
-closePin();openConfig();
-}else alert("Invalid PIN");
+function checkPin(){ 
+    if(document.getElementById("pinInput").value===SYSTEM_PIN){closePin();openConfig();} 
+    else alert("Invalid PIN");
 }
 function openConfig(){
-document.getElementById("configModal").style.display="flex";
-if(config){
-document.getElementById("repoInput").value=config.repo;
-document.getElementById("tokenInput").value=config.token;
-}
+    document.getElementById("configModal").style.display="flex";
+    if(config){
+        document.getElementById("repoInput").value=config.repo;
+        document.getElementById("tokenInput").value=config.token;
+    }
 }
 function closeConfig(){document.getElementById("configModal").style.display="none";}
 function saveConfig(){
-const repo=document.getElementById("repoInput").value;
-const token=document.getElementById("tokenInput").value;
-if(!repo||!token){alert("Fill all fields");return;}
-localStorage.setItem("gh_crm_config",JSON.stringify({repo,token}));
-alert("Cloud configuration updated");
-location.reload();
+    const repo=document.getElementById("repoInput").value.trim();
+    const token=document.getElementById("tokenInput").value.trim();
+    if(!repo||!token){alert("Fill all fields"); return;}
+    localStorage.setItem("gh_crm_config",JSON.stringify({repo,token}));
+    alert("Cloud configuration updated");
+    location.reload();
 }
-function logout(){
-if(confirm("Reset cloud configuration?")){
-localStorage.removeItem("gh_crm_config");
-location.reload();
+function logout(){if(confirm("Reset cloud configuration?")){localStorage.removeItem("gh_crm_config"); location.reload();}}
+
+// --- Status Functions ---
+function setStatus(text,color,isSyncing=false){
+    const dot=document.getElementById("statusDot");
+    const txt=document.getElementById("statusText");
+    txt.innerText=text;
+    txt.className=`text-[10px] font-bold uppercase italic ${isSyncing?'syncing':''} text-slate-500`;
+    const colors={blue:"bg-blue-500",green:"bg-green-500",red:"bg-red-500"};
+    dot.className=`status-dot ${colors[color]||'bg-slate-300'}`;
 }
+
+// --- Photo Functions ---
+document.getElementById("fotoInput").onchange=function(e){
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=function(event){
+        const img=new Image(); img.src=event.target.result;
+        img.onload=function(){
+            const canvas=document.createElement("canvas");
+            const MAX_WIDTH=1000;
+            let width=img.width,height=img.height;
+            if(width>MAX_WIDTH){height*=MAX_WIDTH/width;width=MAX_WIDTH;}
+            canvas.width=width; canvas.height=height;
+            const ctx=canvas.getContext("2d"); ctx.drawImage(img,0,0,width,height);
+            compressedImageBase64=canvas.toDataURL("image/jpeg",0.7);
+            document.getElementById("imgPreview").src=compressedImageBase64;
+            document.getElementById("previewArea").classList.remove("hidden");
+        }
+    };
+    reader.readAsDataURL(file);
+};
+function resetFoto(){compressedImageBase64=""; document.getElementById("fotoInput").value=""; document.getElementById("previewArea").classList.add("hidden");}
+
+// --- GitHub Functions ---
+async function ghFetch(){
+    if(!config) { setStatus("Cloud Offline","red"); return; }
+    setStatus("Connecting...","blue",true);
+    try{
+        const res=await fetch(`https://api.github.com/repos/${config.repo}/contents/data.json`,{headers:{"Authorization":`token ${config.token}`},cache:"no-store"});
+        if(res.ok){
+            const data=await res.json();
+            allContacts=JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            setStatus("Cloud Online","green");
+        } else setStatus("Cloud Offline","red");
+    } catch(e){setStatus("Cloud Offline","red"); console.error(e);}
 }
+
+// --- Upload Photo ---
+async function uploadImage(fileName){
+    const url=`https://api.github.com/repos/${config.repo}/contents/allegati/${fileName}`;
+    const content=compressedImageBase64.split(",")[1];
+    const body={message:`Photo: ${fileName}`, content};
+    const res=await fetch(url,{method:"PUT",headers:{"Authorization":`token ${config.token}`,"Content-Type":"application/json"},body:JSON.stringify(body)});
+    return res.ok;
+}
+
+// --- Form Submit ---
+document.getElementById("contactForm").onsubmit=async(e)=>{
+    e.preventDefault();
+    if(!config){alert("Cloud not configured!"); return;}
+    const btn=document.getElementById("submitBtn");
+    btn.disabled=true; btn.innerText="SENDING...";
+    
+    let photoFileName="";
+    if(compressedImageBase64){
+        photoFileName=`IMG_${Date.now()}.jpg`;
+        const ok=await uploadImage(photoFileName);
+        if(!ok){alert("Photo upload error"); btn.disabled=false; btn.innerText="Save Contact"; return;}
+    }
+    
+    const data={
+        azienda:document.getElementById("azienda").value,
+        nomeCognome:document.getElementById("nomeCognome").value,
+        indirizzo:document.getElementById("indirizzo").value,
+        occupazione:document.getElementById("occupazione").value,
+        cerco:document.getElementById("cerco").value,
+        foto:photoFileName,
+        timestamp:new Date().toLocaleString("en-GB")
+    };
+    
+    allContacts.unshift(data);
+    const url=`https://api.github.com/repos/${config.repo}/contents/data.json`;
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(allContacts,null,2))));
+    const body={message:`Insert: ${data.nomeCognome}`,content};
+    const res=await fetch(url,{method:"PUT",headers:{"Authorization":`token ${config.token}`,"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(res.ok){alert("Thank you, your contact has been saved."); location.reload();}
+    else{alert("Error sending data."); btn.disabled=false; btn.innerText="Save Contact";}
+}
+
+// --- Initialize ---
+if(config) ghFetch();
 </script>
 
 </body>
