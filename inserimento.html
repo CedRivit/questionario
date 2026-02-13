@@ -1,279 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RIVIT S.p.A. SB - Lead Capture</title>
-    <style>
-        :root {
-            --primary-blue: #00a8ff;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --text-color: #ffffff;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: url('intro.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1;
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            width: 90%;
-            max-width: 700px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            max-width: 200px;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .full-width {
-            grid-column: span 2;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 0.85rem;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary-blue);
-        }
-
-        input, select, textarea {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 12px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
-        }
-
-        .phone-container {
-            display: flex;
-            gap: 5px;
-        }
-
-        .phone-container select {
-            width: 100px;
-        }
-
-        .scan-section {
-            margin-top: 20px;
-            border: 2px dashed var(--glass-border);
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .scan-section:hover {
-            border-color: var(--primary-blue);
-            background: rgba(0, 168, 255, 0.05);
-        }
-
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            margin-top: 30px;
-            background: var(--primary-blue);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.4);
-            transition: 0.3s;
-        }
-
-        button.submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 168, 255, 0.6);
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>RIVIT S.p.A SB - Contact Form</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body {
+        background-image: url('intro.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 2rem;
+    }
+    .status-dot {
+        height: 8px;
+        width: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 6px;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    .syncing { animation: pulse 1.5s infinite; }
+</style>
 </head>
-<body>
+<body class="antialiased text-slate-900">
 
-<div class="overlay"></div>
-
-<div class="container">
-    <div class="header">
-        <img src="FOTO1.jpg" alt="RIVIT S.p.A. SB" class="logo">
-        <p>Innovation and Fastening Systems</p>
-    </div>
-
-    <form id="leadForm">
-        <div class="form-grid">
-            <div class="input-group full-width">
-                <label>Company</label>
-                <input type="text" id="company" placeholder="Enter company name" required>
+<div class="w-full max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
+    <!-- Header with Logo -->
+    <header class="mb-6">
+        <div class="glass-panel p-4 sm:p-6 shadow-2xl flex justify-between items-center border-b-4 border-red-600">
+            <div class="flex items-center gap-3">
+                <img src="FOTO1.jpg" alt="RIVIT Logo" class="h-14 w-auto">
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">RIVIT S.p.A SB</h1>
             </div>
-
-            <div class="input-group">
-                <label>First Name</label>
-                <input type="text" id="firstName" required>
-            </div>
-
-            <div class="input-group">
-                <label>Last Name</label>
-                <input type="text" id="lastName" required>
-            </div>
-
-            <div class="input-group full-width">
-                <label>City</label>
-                <input type="text" id="city" required>
-            </div>
-
-            <div class="input-group">
-                <label>Landline Phone</label>
-                <div class="phone-container">
-                    <select class="countryCode" id="landlineCode"></select>
-                    <input type="tel" id="landline" placeholder="Number" style="flex-grow:1">
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>Mobile Phone</label>
-                <div class="phone-container">
-                    <select class="countryCode" id="mobileCode"></select>
-                    <input type="tel" id="mobile" placeholder="Number" style="flex-grow:1" required>
-                </div>
-            </div>
-
-            <div class="input-group full-width">
-                <label>What is your business activity?</label>
-                <textarea id="activity" rows="2"></textarea>
-            </div>
-
-            <div class="input-group full-width">
-                <label>What are you looking for from Rivit?</label>
-                <textarea id="needs" rows="2"></textarea>
-            </div>
-
-            <div class="input-group full-width">
-                <label>Business Card Scan</label>
-                <div class="scan-section" onclick="document.getElementById('cameraInput').click()">
-                    <span id="scanLabel">📸 Click to Take Photo or Upload</span>
-                    <input type="file" id="cameraInput" accept="image/*" capture="camera" style="display:none">
-                    <input type="hidden" id="cardLink">
-                </div>
+            <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+                <span id="statusDot" class="status-dot bg-slate-300"></span>
+                <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
             </div>
         </div>
+    </header>
 
-        <button type="submit" class="submit-btn">Submit Information</button>
-    </form>
+    <!-- Main Form -->
+    <main class="glass-panel p-6 sm:p-8 shadow-2xl border-b-4 border-slate-200">
+        <form id="contactForm" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="sm:col-span-2">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Company</label>
+                    <input type="text" id="company" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Business Name">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Full Name</label>
+                    <input type="text" id="fullName" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="First and Last Name">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">City</label>
+                    <input type="text" id="city" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="City">
+                </div>
+            </div>
+
+            <!-- Phone Section -->
+            <script>
+                const countries = [
+                    {name:"Italy", code:"+39", flag:"🇮🇹"}, {name:"USA", code:"+1", flag:"🇺🇸"}, {name:"UK", code:"+44", flag:"🇬🇧"},
+                    {name:"Germany", code:"+49", flag:"🇩🇪"}, {name:"France", code:"+33", flag:"🇫🇷"}, {name:"Spain", code:"+34", flag:"🇪🇸"},
+                    {name:"Canada", code:"+1", flag:"🇨🇦"}, {name:"Australia", code:"+61", flag:"🇦🇺"}, {name:"Switzerland", code:"+41", flag:"🇨🇭"},
+                    {name:"Belgium", code:"+32", flag:"🇧🇪"}, {name:"Netherlands", code:"+31", flag:"🇳🇱"}, {name:"Norway", code:"+47", flag:"🇳🇴"},
+                    {name:"Sweden", code:"+46", flag:"🇸🇪"}, {name:"Finland", code:"+358", flag:"🇫🇮"}, {name:"Denmark", code:"+45", flag:"🇩🇰"},
+                    {name:"Ireland", code:"+353", flag:"🇮🇪"}, {name:"Japan", code:"+81", flag:"🇯🇵"}, {name:"China", code:"+86", flag:"🇨🇳"}
+                ];
+                function countryOptions() {
+                    return countries.map(c=>`<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`).join('') + `<option value="manual">➕ Other...</option>`;
+                }
+            </script>
+
+            <div class="space-y-4">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Phone Contacts</label>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <div class="flex flex-1 gap-2">
+                        <select id="prefixMobile" onchange="toggleManual('prefixMobile','manualMobile')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none">
+                            <script>document.write(countryOptions());</script>
+                        </select>
+                        <input type="text" id="manualMobile" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
+                        <input type="tel" id="mobile" required placeholder="Mobile Number" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500">
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <div class="flex flex-1 gap-2">
+                        <select id="prefixLandline" onchange="toggleManual('prefixLandline','manualLandline')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none">
+                            <script>document.write(countryOptions());</script>
+                        </select>
+                        <input type="text" id="manualLandline" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
+                        <input type="tel" id="landline" placeholder="Landline Number" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Fields -->
+            <div class="grid grid-cols-1 gap-4">
+                <textarea id="activity" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What is your business activity?"></textarea>
+                <textarea id="lookingFor" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What are you looking for from Rivit?"></textarea>
+            </div>
+
+            <!-- Photo Capture -->
+            <div class="p-4 border-2 border-dashed border-red-100 rounded-3xl bg-red-50/30">
+                <label class="block text-[10px] font-bold text-red-600 uppercase mb-3 text-center tracking-widest italic">Business Card Photo</label>
+                <div class="flex flex-col items-center gap-3">
+                    <input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
+                    <button type="button" onclick="document.getElementById('photoInput').click()" class="bg-slate-800 text-white px-8 py-3 rounded-full text-[10px] font-bold uppercase flex items-center gap-2 shadow-lg">
+                        <i class="fas fa-camera text-sm"></i> Take Photo
+                    </button>
+                    <div id="previewArea" class="hidden w-full max-w-[200px] relative mt-2">
+                        <img id="imgPreview" src="" class="w-full rounded-2xl border-4 border-white shadow-xl">
+                        <button type="button" onclick="resetPhoto()" class="absolute -top-3 -right-3 bg-red-600 text-white w-7 h-7 rounded-full text-xs shadow-lg flex items-center justify-center"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button type="button" onclick="if(confirm('Cancel the entry?')) location.reload()" class="w-full sm:w-1/3 py-4 bg-slate-200 text-slate-600 font-bold rounded-3xl uppercase tracking-widest text-xs">Cancel</button>
+                <button type="submit" id="submitBtn" class="w-full sm:w-2/3 py-5 bg-red-600 text-white font-bold rounded-3xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-4 uppercase tracking-widest text-sm">
+                    <i class="fas fa-save"></i> Save Contact
+                </button>
+            </div>
+        </form>
+    </main>
 </div>
 
 <script>
-    // List of countries (simplified example)
-    const countries = [
-        { name: "Italy", code: "+39" },
-        { name: "USA", code: "+1" },
-        { name: "UK", code: "+44" },
-        { name: "Germany", code: "+49" },
-        { name: "France", code: "+33" },
-        { name: "Spain", code: "+34" }
-    ];
-
-    // Populate country dropdowns
-    const selects = document.querySelectorAll('.countryCode');
-    selects.forEach(select => {
-        countries.forEach(c => {
-            let opt = document.createElement('option');
-            opt.value = c.code;
-            opt.innerHTML = `${c.name} (${c.code})`;
-            select.appendChild(opt);
-        });
-    });
-
-    // Handle File selection
-    document.getElementById('cameraInput').addEventListener('change', function(e) {
-        if(e.target.files.length > 0) {
-            const fileName = e.target.files[0].name;
-            document.getElementById('scanLabel').innerText = "✅ Card Captured: " + fileName;
-            // In a real app, you'd upload this. Here we save a dummy path.
-            document.getElementById('cardLink').value = "allegati/" + fileName;
+let compressedImageBase64 = "";
+function toggleManual(selectId, manualId){
+    const sel = document.getElementById(selectId);
+    const man = document.getElementById(manualId);
+    if(sel.value==="manual"){ man.classList.remove('hidden'); sel.classList.add('hidden'); man.focus(); }
+}
+document.getElementById('photoInput').onchange = function(e){
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event){
+        const img = new Image(); img.src = event.target.result;
+        img.onload = function(){
+            const canvas=document.createElement('canvas'); const MAX=1000;
+            let w=img.width, h=img.height;
+            if(w>MAX){ h*=MAX/w; w=MAX; }
+            canvas.width=w; canvas.height=h;
+            canvas.getContext('2d').drawImage(img,0,0,w,h);
+            compressedImageBase64=canvas.toDataURL('image/jpeg',0.7);
+            document.getElementById('imgPreview').src=compressedImageBase64;
+            document.getElementById('previewArea').classList.remove('hidden');
         }
-    });
+    }
+    reader.readAsDataURL(file);
+};
+function resetPhoto(){ compressedImageBase64=""; document.getElementById('photoInput').value=""; document.getElementById('previewArea').classList.add('hidden'); }
 
-    // Form Submission
-    document.getElementById('leadForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Data collection (for future use/hidden fields)
-        const formData = {
-            company: document.getElementById('company').value,
-            fullName: document.getElementById('firstName').value + " " + document.getElementById('lastName').value,
-            cardPath: document.getElementById('cardLink').value
-        };
-
-        // Simulated Save Success
-        console.log("Saving Data...", formData);
-        
-        alert("Thank you for providing your information.\n\nOur sales representative will contact you as soon as possible.");
-        
-        // Reset form or redirect
-        // this.reset();
-    });
+document.getElementById('contactForm').onsubmit = function(e){
+    e.preventDefault();
+    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerText="SAVING...";
+    
+    const prefMobile = document.getElementById('prefixMobile').classList.contains('hidden') ? document.getElementById('manualMobile').value : document.getElementById('prefixMobile').value;
+    const prefLandline = document.getElementById('prefixLandline').classList.contains('hidden') ? document.getElementById('manualLandline').value : document.getElementById('prefixLandline').value;
+    
+    // Save data locally for now
+    const data = {
+        company: document.getElementById('company').value,
+        fullName: document.getElementById('fullName').value,
+        city: document.getElementById('city').value,
+        mobile: prefMobile + " " + document.getElementById('mobile').value,
+        landline: prefLandline + " " + document.getElementById('landline').value,
+        activity: document.getElementById('activity').value,
+        lookingFor: document.getElementById('lookingFor').value,
+        photo: compressedImageBase64,
+        timestamp: new Date().toLocaleString()
+    };
+    
+    // Here you would upload the image to `allegati` directory and save the link
+    
+    console.log(data); // for debugging
+    
+    alert("Thank you for submitting your data.\nOur sales team will contact you shortly.");
+    location.reload();
+};
 </script>
-
 </body>
 </html>
