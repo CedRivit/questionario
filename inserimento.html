@@ -1,133 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>RIVIT S.p.A SB - Entry</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        input, textarea, select { font-size: 16px !important; }
-        body { background-image: url('intro.jpg'); background-size: cover; background-position: center; background-attachment: fixed; min-height: 100vh; }
-        .glass-panel { background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); }
-        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .syncing { animation: pulse 1.5s infinite; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>RIVIT S.p.A SB - Entry</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+input, textarea, select { font-size:16px !important; }
+body {
+    background-image:url('intro.jpg');
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    min-height:100vh;
+}
+.glass-panel {
+    background:rgba(255,255,255,0.96);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.4);
+}
+.status-dot {
+    height:8px;width:8px;border-radius:50%;
+    display:inline-block;margin-right:6px;
+}
+.modal-bg {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+}
+</style>
 </head>
-<body class="font-sans text-slate-900 antialiased">
 
-    <div class="w-full max-w-2xl mx-auto p-3 sm:p-6 lg:p-8">
-        <header class="mb-6">
-            <div class="glass-panel p-4 sm:p-6 rounded-[2rem] shadow-2xl border-b-4 border-red-600 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <img src="FOTO1.jpg" alt="Logo" class="h-10 sm:h-14 w-auto">
-                    <h1 class="text-xl sm:text-2xl font-black tracking-tighter text-slate-800">RIVIT S.p.A SB</h1>
-                </div>
-                <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
-                    <span id="statusDot" class="status-dot bg-slate-300"></span>
-                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
-                </div>
-            </div>
-        </header>
+<body class="font-sans text-slate-900">
 
-        <main class="glass-panel p-5 sm:p-8 rounded-[2.5rem] shadow-2xl border-b-4 border-slate-200">
-            <form id="contactForm" class="space-y-6">
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="sm:col-span-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Company</label>
-                        <input type="text" id="azienda" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Company Name">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">Contact Person</label>
-                        <input type="text" id="nomeCognome" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="First and Last Name">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-1 italic">City</label>
-                        <input type="text" id="indirizzo" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Location">
-                    </div>
-                </div>
+<div class="w-full max-w-2xl mx-auto p-4">
 
-                <script>
-                    const nazioniList = [
-                        {n: "Italy", p: "+39", f: "🇮🇹"}, {n: "Albania", p: "+355", f: "🇦🇱"}, {n: "Algeria", p: "+213", f: "🇩🇿"},
-                        {n: "Andorra", p: "+376", f: "🇦🇩"}, {n: "Angola", p: "+244", f: "🇦🇴"}, {n: "Argentina", p: "+54", f: "🇦🇷"},
-                        {n: "Australia", p: "+61", f: "🇦🇺"}, {n: "Austria", p: "+43", f: "🇦🇹"}, {n: "Belgium", p: "+32", f: "🇧🇪"},
-                        {n: "Brazil", p: "+55", f: "🇧🇷"}, {n: "Bulgaria", p: "+359", f: "🇧🇬"}, {n: "Canada", p: "+1", f: "🇨🇦"},
-                        {n: "Chile", p: "+56", f: "🇨🇱"}, {n: "China", p: "+86", f: "🇨🇳"}, {n: "Cyprus", p: "+357", f: "🇨🇾"},
-                        {n: "Croatia", p: "+385", f: "🇭🇷"}, {n: "Denmark", p: "+45", f: "🇩🇰"}, {n: "Egypt", p: "+20", f: "🇪🇬"},
-                        {n: "United Arab Emirates", p: "+971", f: "🇦🇪"}, {n: "Finland", p: "+358", f: "🇫🇮"}, {n: "France", p: "+33", f: "🇫🇷"},
-                        {n: "Germany", p: "+49", f: "🇩🇪"}, {n: "Japan", p: "+81", f: "🇯🇵"}, {n: "Greece", p: "+30", f: "🇬🇷"},
-                        {n: "India", p: "+91", f: "🇮🇳"}, {n: "Ireland", p: "+353", f: "🇮🇪"}, {n: "Israel", p: "+972", f: "🇮🇱"},
-                        {n: "Luxembourg", p: "+352", f: "🇱🇺"}, {n: "Malta", p: "+356", f: "🇲🇹"}, {n: "Morocco", p: "+212", f: "🇲🇦"},
-                        {n: "Mexico", p: "+52", f: "🇲🇽"}, {n: "Monaco", p: "+377", f: "🇲🇨"}, {n: "Norway", p: "+47", f: "🇳🇴"},
-                        {n: "Netherlands", p: "+31", f: "🇳🇱"}, {n: "Poland", p: "+48", f: "🇵🇱"}, {n: "Portugal", p: "+351", f: "🇵🇹"},
-                        {n: "United Kingdom", p: "+44", f: "🇬🇧"}, {n: "Romania", p: "+40", f: "🇷🇴"}, {n: "San Marino", p: "+378", f: "🇸🇲"},
-                        {n: "Serbia", p: "+381", f: "🇷🇸"}, {n: "Slovenia", p: "+386", f: "🇸🇮"}, {n: "Spain", p: "+34", f: "🇪🇸"},
-                        {n: "United States", p: "+1", f: "🇺🇸"}, {n: "Sweden", p: "+46", f: "🇸🇪"}, {n: "Switzerland", p: "+41", f: "🇨🇭"},
-                        {n: "Tunisia", p: "+216", f: "🇹🇳"}, {n: "Turkey", p: "+90", f: "🇹🇷"}, {n: "Hungary", p: "+36", f: "🇭🇺"}
-                    ];
-                    function getOptionsHtml() {
-                        return nazioniList.map(x => `<option value="${x.p}">${x.f} ${x.n} (${x.p})</option>`).join('') + `<option value="manual">➕ Other...</option>`;
-                    }
-                </script>
+<header class="mb-6">
+<div class="glass-panel p-5 rounded-[2rem] shadow-2xl border-b-4 border-red-600 flex justify-between items-center">
 
-                <div class="space-y-4">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-[-8px] italic">Phone Contacts</label>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <div class="flex flex-1 gap-2">
-                            <select id="prefixCell" onchange="toggleManual('prefixCell', 'manualCell')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none">
-                                <script>document.write(getOptionsHtml());</script>
-                            </select>
-                            <input type="text" id="manualCell" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
-                            <input type="tel" id="cell" required inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Mobile">
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <div class="flex flex-1 gap-2">
-                            <select id="prefixTel" onchange="toggleManual('prefixTel', 'manualTel')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none">
-                                <script>document.write(getOptionsHtml());</script>
-                            </select>
-                            <input type="text" id="manualTel" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
-                            <input type="tel" id="tel" inputmode="tel" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Company Landline">
-                        </div>
-                    </div>
-                </div>
+<div class="flex items-center gap-3">
+<img src="FOTO1.jpg" class="h-12">
+<h1 class="text-xl font-black">RIVIT S.p.A SB</h1>
+</div>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <textarea id="occupazione" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What does the company do?"></textarea>
-                    <textarea id="cerco" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What are they looking for from Rivit?"></textarea>
-                </div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-white px-3 py-1 rounded-full border">
+<span id="statusDot" class="status-dot bg-slate-300"></span>
+<span id="statusText" class="text-xs font-bold uppercase text-slate-500">Cloud Offline</span>
+</div>
 
-                <div class="p-4 border-2 border-dashed border-red-100 rounded-3xl bg-red-50/30">
-                    <label class="block text-[10px] font-black text-red-600 uppercase mb-3 text-center tracking-widest italic">Photo Attachment</label>
-                    <div class="flex flex-col items-center gap-3">
-                        <input type="file" id="fotoInput" accept="image/*" capture="environment" class="hidden">
-                        <button type="button" onclick="document.getElementById('fotoInput').click()" class="bg-slate-800 text-white px-8 py-3 rounded-full text-[10px] font-black uppercase flex items-center gap-2 shadow-lg">
-                            <i class="fas fa-camera text-sm"></i> Take Business Card Photo
-                        </button>
-                        <div id="previewArea" class="hidden w-full max-w-[200px] relative mt-2">
-                            <img id="imgPreview" src="" class="w-full rounded-2xl border-4 border-white shadow-xl">
-                            <button type="button" onclick="resetFoto()" class="absolute -top-3 -right-3 bg-red-600 text-white w-7 h-7 rounded-full text-xs shadow-lg flex items-center justify-center"><i class="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                </div>
+<button onclick="openPin()" class="bg-slate-800 text-white px-4 py-2 rounded-full text-xs font-bold uppercase">
+<i class="fas fa-cloud"></i> Cloud Settings
+</button>
+</div>
 
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <button type="button" onclick="if(confirm('Cancel entry?')) location.reload()" class="w-full sm:w-1/3 py-4 bg-slate-200 text-slate-600 font-black rounded-3xl uppercase tracking-widest text-xs">
-                        Cancel
-                    </button>
-                    <button type="submit" id="submitBtn" class="w-full sm:w-2/3 py-5 bg-red-600 text-white font-black rounded-3xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-4 uppercase tracking-widest text-sm">
-                        <i class="fas fa-save"></i> Save Contact
-                    </button>
-                </div>
-            </form>
-        </main>
-    </div>
+</div>
+</header>
+
+<main class="glass-panel p-6 rounded-[2rem] shadow-2xl">
+
+<form id="contactForm" class="space-y-4">
+
+<input type="text" placeholder="Company" required class="w-full p-3 border rounded-xl">
+<input type="text" placeholder="Contact Person" required class="w-full p-3 border rounded-xl">
+<input type="text" placeholder="City" required class="w-full p-3 border rounded-xl">
+
+<textarea placeholder="What does the company do?" required class="w-full p-3 border rounded-xl"></textarea>
+<textarea placeholder="What are they looking for?" required class="w-full p-3 border rounded-xl"></textarea>
+
+<div class="flex gap-3">
+<button type="button" onclick="if(confirm('Cancel entry?')) location.reload()" class="w-1/3 py-3 bg-slate-200 rounded-xl font-bold uppercase text-xs">
+Cancel
+</button>
+
+<button type="submit" class="w-2/3 py-3 bg-red-600 text-white rounded-xl font-bold uppercase text-sm">
+Save Contact
+</button>
+</div>
+
+</form>
+</main>
+</div>
+
+<!-- PIN MODAL -->
+<div id="pinModal" class="modal-bg">
+<div class="bg-white p-8 rounded-3xl w-80 shadow-2xl text-center">
+<h2 class="text-lg font-black mb-4">Enter PIN</h2>
+<input type="password" id="pinInput" class="w-full p-3 border rounded-xl text-center mb-4" placeholder="Enter PIN">
+<button onclick="checkPin()" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold">Access</button>
+<button onclick="closePin()" class="w-full mt-2 text-slate-500 text-sm">Cancel</button>
+</div>
+</div>
+
+<!-- CONFIG MODAL -->
+<div id="configModal" class="modal-bg">
+<div class="bg-white p-8 rounded-3xl w-96 shadow-2xl">
+<h2 class="text-lg font-black mb-4 text-center">Cloud Configuration</h2>
+
+<label class="text-xs font-bold uppercase">GitHub Repository</label>
+<input type="text" id="repoInput" class="w-full p-3 border rounded-xl mb-4" placeholder="username/repository">
+
+<label class="text-xs font-bold uppercase">GitHub Token</label>
+<input type="password" id="tokenInput" class="w-full p-3 border rounded-xl mb-6" placeholder="Personal Access Token">
+
+<div class="flex gap-3">
+<button onclick="saveConfig()" class="w-2/3 bg-red-600 text-white py-3 rounded-xl font-bold">Save</button>
+<button onclick="logout()" class="w-1/3 bg-slate-200 py-3 rounded-xl font-bold text-xs">Reset</button>
+</div>
+
+<button onclick="closeConfig()" class="w-full mt-4 text-slate-500 text-sm">Close</button>
+</div>
+</div>
 
 <script>
-document.getElementById('statusText').innerText = "Cloud Active";
+
+// ===== PIN CONFIG =====
+const SYSTEM_PIN = "1234"; // 🔐 Cambialo qui
+
+function openPin(){
+document.getElementById("pinModal").style.display="flex";
+}
+function closePin(){
+document.getElementById("pinModal").style.display="none";
+}
+function checkPin(){
+const pin=document.getElementById("pinInput").value;
+if(pin===SYSTEM_PIN){
+closePin();
+openConfig();
+}else{
+alert("Invalid PIN");
+}
+}
+
+// ===== CONFIG =====
+function openConfig(){
+document.getElementById("configModal").style.display="flex";
+}
+function closeConfig(){
+document.getElementById("configModal").style.display="none";
+}
+
+function saveConfig(){
+const repo=document.getElementById("repoInput").value;
+const token=document.getElementById("tokenInput").value;
+if(!repo || !token){
+alert("Please fill all fields");
+return;
+}
+localStorage.setItem("gh_crm_config",JSON.stringify({repo,token}));
+updateStatus(true);
+closeConfig();
+}
+
+function logout(){
+if(confirm("Reset cloud configuration?")){
+localStorage.removeItem("gh_crm_config");
+updateStatus(false);
+closeConfig();
+}
+}
+
+// ===== STATUS =====
+function updateStatus(active){
+if(active){
+document.getElementById("statusDot").className="status-dot bg-green-500";
+document.getElementById("statusText").innerText="Cloud Active";
+}else{
+document.getElementById("statusDot").className="status-dot bg-slate-300";
+document.getElementById("statusText").innerText="Cloud Offline";
+}
+}
+
+// INIT
+if(localStorage.getItem("gh_crm_config")){
+updateStatus(true);
+}
+
 </script>
 
 </body>
