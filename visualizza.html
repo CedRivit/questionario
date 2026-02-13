@@ -155,7 +155,7 @@ function renderTable() {
 
     list.innerHTML = contacts.map(c => {
         const fotoLink = c.photo && c.photo !== "" ? 
-            `<a href="questionario/allegati/${c.photo}" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+            `<a href="allegati/${c.photo}" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                 <i class="fas fa-image"></i>
             </a>` : 
             `<span class="text-slate-300 text-[10px] font-bold uppercase">No Photo</span>`;
