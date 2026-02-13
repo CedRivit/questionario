@@ -16,174 +16,187 @@
 </head>
 <body class="bg-slate-100 font-sans min-h-screen pb-10">
 
-    <div class="max-w-7xl mx-auto p-4 md:p-8">
-        
-        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <img src="FOTO1.jpg" alt="Logo" class="h-12 w-auto object-contain">
-                <div>
-                    <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">RIVIT S.p.A SB</h1>
-                    <p id="counter" class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Caricamento in corso...</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2">
-                <a href="index.html" class="bg-slate-800 text-white text-[10px] font-bold py-3 px-5 rounded-xl shadow-lg uppercase transition active:scale-95">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold py-3 px-5 rounded-xl shadow-lg uppercase transition active:scale-95">
-                    <i class="fas fa-file-excel"></i> Excel
-                </button>
-                <div id="status" class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm flex items-center">
-                    <span id="statusDot" class="status-dot bg-slate-300"></span>
-                    <span id="statusText" class="text-[9px] font-bold uppercase text-slate-500">Offline</span>
-                </div>
-            </div>
-        </header>
-
-        <div id="setupArea" class="hidden mb-8 p-6 bg-white border-2 border-red-100 rounded-3xl shadow-md max-w-md mx-auto">
-            <h3 class="font-bold text-slate-800 mb-4 uppercase text-sm text-center">Configurazione Cloud</h3>
-            <div class="space-y-4">
-                <input type="password" id="ghToken" placeholder="GitHub Token" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-red-500">
-                <input type="text" id="ghRepo" placeholder="utente/repository" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-red-500">
-                <button onclick="saveSetup()" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ACCEDI AI DATI</button>
+<div class="max-w-7xl mx-auto p-4 md:p-8">
+    
+    <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <img src="FOTO1.jpg" alt="Logo" class="h-12 w-auto object-contain">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">RIVIT S.p.A SB</h1>
+                <p id="counter" class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Caricamento in corso...</p>
             </div>
         </div>
-
-        <main id="mainApp" class="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
-            <div class="table-container overflow-x-auto">
-                <table class="w-full text-left border-collapse whitespace-nowrap">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-100">
-                            <th class="p-5 text-[10px] font-black text-slate-400 uppercase tracking-wider">Data</th>
-                            <th class="p-5 text-[10px] font-black text-red-600 uppercase tracking-wider">Azienda</th>
-                            <th class="p-5 text-[10px] font-black text-slate-700 uppercase tracking-wider">Referente</th>
-                            <th class="p-5 text-[10px] font-black text-slate-400 uppercase tracking-wider">Dettagli</th>
-                            <th class="p-5 text-[10px] font-black text-slate-400 uppercase tracking-wider">Cosa Cerca</th>
-                            <th class="p-5 text-[10px] font-black text-blue-600 uppercase tracking-wider text-center">Foto</th>
-                        </tr>
-                    </thead>
-                    <tbody id="contactsTable" class="divide-y divide-slate-100">
-                        </tbody>
-                </table>
+        
+        <div class="flex items-center gap-2">
+            <a href="index.html" class="bg-slate-800 text-white text-[10px] font-bold py-3 px-5 rounded-xl shadow-lg uppercase transition active:scale-95">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <button onclick="exportToExcel()" class="bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold py-3 px-5 rounded-xl shadow-lg uppercase transition active:scale-95">
+                <i class="fas fa-file-excel"></i> Excel
+            </button>
+            <div id="status" class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm flex items-center">
+                <span id="statusDot" class="status-dot bg-slate-300"></span>
+                <span id="statusText" class="text-[9px] font-bold uppercase text-slate-500">Offline</span>
             </div>
-        </main>
+        </div>
+    </header>
 
-        <footer class="mt-8 text-center">
-            <button onclick="logout()" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest hover:text-red-500 transition-colors italic">Cambia account o resetta configurazione</button>
-        </footer>
+    <div id="setupArea" class="hidden mb-8 p-6 bg-white border-2 border-red-100 rounded-3xl shadow-md max-w-md mx-auto">
+        <h3 class="font-bold text-slate-800 mb-4 uppercase text-sm text-center">Configurazione Cloud</h3>
+        <div class="space-y-4">
+            <input type="password" id="ghToken" placeholder="GitHub Token" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-red-500">
+            <input type="text" id="ghRepo" placeholder="utente/repository" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-red-500">
+            <button onclick="saveSetup()" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ACCEDI AI DATI</button>
+        </div>
     </div>
 
-    <script>
-        let config = JSON.parse(localStorage.getItem('gh_crm_config'));
-        let contacts = [];
+    <main id="mainApp" class="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
+        <div class="table-container overflow-x-auto">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-100">
+                        <th class="p-5 text-[10px] font-black text-slate-400 uppercase tracking-wider">Data</th>
+                        <th class="p-5 text-[10px] font-black text-red-600 uppercase tracking-wider">Azienda</th>
+                        <th class="p-5 text-[10px] font-black text-slate-700 uppercase tracking-wider">Referente</th>
+                        <th class="p-5 text-[10px] font-black text-slate-400 uppercase tracking-wider">Dettagli</th>
+                        <th class="p-5 text-[10px] font-black text-slate-400 uppercase tracking-wider">Cosa Cerca</th>
+                        <th class="p-5 text-[10px] font-black text-blue-600 uppercase tracking-wider text-center">Foto</th>
+                    </tr>
+                </thead>
+                <tbody id="contactsTable" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </main>
 
-        if (!config) {
-            document.getElementById('setupArea').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
+    <footer class="mt-8 text-center">
+        <button onclick="logout()" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest hover:text-red-500 transition-colors italic">Cambia account o resetta configurazione</button>
+    </footer>
+</div>
+
+<script>
+    let config = JSON.parse(localStorage.getItem('gh_crm_config'));
+    let contacts = [];
+
+    if (!config) {
+        document.getElementById('setupArea').classList.remove('hidden');
+        document.getElementById('mainApp').classList.add('hidden');
+    }
+
+    function saveSetup() {
+        const token = document.getElementById('ghToken').value.trim();
+        const repo = document.getElementById('ghRepo').value.trim();
+        if(token && repo) {
+            localStorage.setItem('gh_crm_config', JSON.stringify({token, repo}));
+            location.reload();
         }
+    }
 
-        function saveSetup() {
-            const token = document.getElementById('ghToken').value.trim();
-            const repo = document.getElementById('ghRepo').value.trim();
-            if(token && repo) {
-                localStorage.setItem('gh_crm_config', JSON.stringify({token, repo}));
-                location.reload();
+    function logout() { 
+        if(confirm("Resettare l'accesso ai dati?")) { 
+            localStorage.removeItem('gh_crm_config'); 
+            location.reload(); 
+        } 
+    }
+
+    function setStatus(text, color, isSyncing = false) {
+        const dot = document.getElementById('statusDot');
+        const txt = document.getElementById('statusText');
+        txt.innerText = text;
+        txt.className = `text-[9px] font-bold uppercase ${isSyncing ? "syncing" : ""} text-slate-500`;
+        const colors = { blue: "bg-blue-500", green: "bg-green-500", red: "bg-red-500" };
+        dot.className = `status-dot ${colors[color] || 'bg-slate-300'}`;
+    }
+
+    function b64_to_utf8(str) {
+        const decoded = atob(str);
+        const bytes = Uint8Array.from(decoded, c => c.charCodeAt(0));
+        return new TextDecoder().decode(bytes);
+    }
+
+    async function fetchData() {
+        if (!config) return;
+        setStatus("Download...", "blue", true);
+        const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+        try {
+            const res = await fetch(url, { 
+                headers: { "Authorization": `token ${config.token}` },
+                cache: 'no-store'
+            });
+            if (res.ok) {
+                const data = await res.json();
+                contacts = JSON.parse(b64_to_utf8(data.content));
+                renderTable();
+                setStatus("Sincronizzato", "green");
+                document.getElementById('counter').innerText = `${contacts.length} CONTATTI IN ARCHIVIO`;
+            } else {
+                console.error("GitHub API error:", res.status, res.statusText);
+                setStatus("Errore File", "red");
             }
+        } catch (e) { 
+            console.error("Fetch error:", e);
+            setStatus("Offline", "red"); 
+        }
+    }
+
+    function renderTable() {
+        const list = document.getElementById('contactsTable');
+        if (contacts.length === 0) {
+            list.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 italic font-medium">Nessun contatto trovato nel database.</td></tr>`;
+            return;
         }
 
-        function logout() { if(confirm("Resettare l'accesso ai dati?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
+        list.innerHTML = contacts.map(c => {
+            const fotoLink = c.foto ? 
+                `<a href="allegati/${c.foto}" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                    <i class="fas fa-image"></i>
+                </a>` : 
+                `<span class="text-slate-300 text-[10px] font-bold uppercase">Nessuna</span>`;
 
-        function setStatus(text, color, isSyncing = false) {
-            const dot = document.getElementById('statusDot');
-            const txt = document.getElementById('statusText');
-            txt.innerText = text;
-            txt.className = `text-[9px] font-bold uppercase ${isSyncing ? "syncing" : ""} text-slate-500`;
-            const colors = { blue: "bg-blue-500", green: "bg-green-500", red: "bg-red-500" };
-            dot.className = `status-dot ${colors[color] || 'bg-slate-300'}`;
-        }
+            return `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="p-5 text-[11px] font-mono text-slate-400">${c.timestamp || '-'}</td>
+                <td class="p-5 font-black text-red-600 text-sm italic uppercase">${c.azienda}</td>
+                <td class="p-5 font-bold text-slate-700 text-sm">${c.nomeCognome}</td>
+                <td class="p-5 text-[11px] text-slate-500 leading-tight">
+                    <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${c.indirizzo}<br>
+                    <i class="fas fa-phone text-slate-300 mr-1"></i> ${c.cell || c.tel || '-'}
+                </td>
+                <td class="p-5 text-[11px] text-slate-600 max-w-xs truncate font-medium">
+                    ${c.cerco}
+                </td>
+                <td class="p-5 text-center">
+                    ${fotoLink}
+                </td>
+            </tr>
+            `;
+        }).join('');
+    }
 
-        async function fetchData() {
-            if (!config) return;
-            setStatus("Download...", "blue", true);
-            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
-            try {
-                const res = await fetch(url, { 
-                    headers: { "Authorization": `token ${config.token}` },
-                    cache: 'no-store'
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    contacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-                    renderTable();
-                    setStatus("Sincronizzato", "green");
-                    document.getElementById('counter').innerText = `${contacts.length} CONTATTI IN ARCHIVIO`;
-                } else {
-                    setStatus("Errore File", "red");
-                }
-            } catch (e) { setStatus("Offline", "red"); }
-        }
+    function exportToExcel() {
+        if (contacts.length === 0) { alert("Nessun dato da esportare"); return; }
+        const headers = ["Data", "Azienda", "Referente", "Indirizzo", "Recapito", "Cosa Cerca", "Nome File Foto"];
+        const csvRows = [
+            headers.join(";"),
+            ...contacts.map(c => [
+                `"${c.timestamp}"`,
+                `"${c.azienda}"`,
+                `"${c.nomeCognome}"`,
+                `"${c.indirizzo}"`,
+                `"${c.cell || c.tel}"`,
+                `"${c.cerco.replace(/"/g, '""')}"`,
+                `"${c.foto || ''}"`
+            ].join(";"))
+        ].join("\n");
 
-        function renderTable() {
-            const list = document.getElementById('contactsTable');
-            if (contacts.length === 0) {
-                list.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 italic font-medium">Nessun contatto trovato nel database.</td></tr>`;
-                return;
-            }
+        const blob = new Blob(["\ufeff" + csvRows], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `Archivio_Rivit_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`;
+        link.click();
+    }
 
-            list.innerHTML = contacts.map(c => {
-                // Generazione link foto se esiste
-                const fotoLink = c.foto ? 
-                    `<a href="allegati/${c.foto}" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                        <i class="fas fa-image"></i>
-                    </a>` : 
-                    `<span class="text-slate-300 text-[10px] font-bold uppercase">Nessuna</span>`;
-
-                return `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-5 text-[11px] font-mono text-slate-400">${c.timestamp || '-'}</td>
-                    <td class="p-5 font-black text-red-600 text-sm italic uppercase">${c.azienda}</td>
-                    <td class="p-5 font-bold text-slate-700 text-sm">${c.nomeCognome}</td>
-                    <td class="p-5 text-[11px] text-slate-500 leading-tight">
-                        <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${c.indirizzo}<br>
-                        <i class="fas fa-phone text-slate-300 mr-1"></i> ${c.cell || c.tel || '-'}
-                    </td>
-                    <td class="p-5 text-[11px] text-slate-600 max-w-xs truncate font-medium">
-                        ${c.cerco}
-                    </td>
-                    <td class="p-5 text-center">
-                        ${fotoLink}
-                    </td>
-                </tr>
-                `;
-            }).join('');
-        }
-
-        function exportToExcel() {
-            if (contacts.length === 0) { alert("Nessun dato da esportare"); return; }
-            const headers = ["Data", "Azienda", "Referente", "Indirizzo", "Recapito", "Cosa Cerca", "Nome File Foto"];
-            const csvRows = [
-                headers.join(";"),
-                ...contacts.map(c => [
-                    `"${c.timestamp}"`,
-                    `"${c.azienda}"`,
-                    `"${c.nomeCognome}"`,
-                    `"${c.indirizzo}"`,
-                    `"${c.cell || c.tel}"`,
-                    `"${c.cerco.replace(/"/g, '""')}"`,
-                    `"${c.foto || ''}"`
-                ].join(";"))
-            ].join("\n");
-
-            const blob = new Blob(["\ufeff" + csvRows], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `Archivio_Rivit_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`;
-            link.click();
-        }
-
-        if (config) fetchData();
-    </script>
+    if (config) fetchData();
+</script>
 </body>
 </html>
