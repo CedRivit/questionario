@@ -57,15 +57,15 @@
                         {n: "Brazil", p: "+55", f: "🇧🇷"}, {n: "Bulgaria", p: "+359", f: "🇧🇬"}, {n: "Canada", p: "+1", f: "🇨🇦"},
                         {n: "Chile", p: "+56", f: "🇨🇱"}, {n: "China", p: "+86", f: "🇨🇳"}, {n: "Cyprus", p: "+357", f: "🇨🇾"},
                         {n: "Croatia", p: "+385", f: "🇭🇷"}, {n: "Denmark", p: "+45", f: "🇩🇰"}, {n: "Egypt", p: "+20", f: "🇪🇬"},
-                        {n: "United Arab Emirates", p: "+971", f: "🇦🇪"}, {n: "Finland", p: "+358", f: "🇫🇮"}, {n: "France", p: "+33", f: "🇫🇷"},
+                        {n: "UAE", p: "+971", f: "🇦🇪"}, {n: "Finland", p: "+358", f: "🇫🇮"}, {n: "France", p: "+33", f: "🇫🇷"},
                         {n: "Germany", p: "+49", f: "🇩🇪"}, {n: "Japan", p: "+81", f: "🇯🇵"}, {n: "Greece", p: "+30", f: "🇬🇷"},
                         {n: "India", p: "+91", f: "🇮🇳"}, {n: "Ireland", p: "+353", f: "🇮🇪"}, {n: "Israel", p: "+972", f: "🇮🇱"},
                         {n: "Luxembourg", p: "+352", f: "🇱🇺"}, {n: "Malta", p: "+356", f: "🇲🇹"}, {n: "Morocco", p: "+212", f: "🇲🇦"},
                         {n: "Mexico", p: "+52", f: "🇲🇽"}, {n: "Monaco", p: "+377", f: "🇲🇨"}, {n: "Norway", p: "+47", f: "🇳🇴"},
                         {n: "Netherlands", p: "+31", f: "🇳🇱"}, {n: "Poland", p: "+48", f: "🇵🇱"}, {n: "Portugal", p: "+351", f: "🇵🇹"},
-                        {n: "United Kingdom", p: "+44", f: "🇬🇧"}, {n: "Romania", p: "+40", f: "🇷🇴"}, {n: "San Marino", p: "+378", f: "🇸🇲"},
+                        {n: "UK", p: "+44", f: "🇬🇧"}, {n: "Romania", p: "+40", f: "🇷🇴"}, {n: "San Marino", p: "+378", f: "🇸🇲"},
                         {n: "Serbia", p: "+381", f: "🇷🇸"}, {n: "Slovenia", p: "+386", f: "🇸🇮"}, {n: "Spain", p: "+34", f: "🇪🇸"},
-                        {n: "United States", p: "+1", f: "🇺🇸"}, {n: "Sweden", p: "+46", f: "🇸🇪"}, {n: "Switzerland", p: "+41", f: "🇨🇭"},
+                        {n: "USA", p: "+1", f: "🇺🇸"}, {n: "Sweden", p: "+46", f: "🇸🇪"}, {n: "Switzerland", p: "+41", f: "🇨🇭"},
                         {n: "Tunisia", p: "+216", f: "🇹🇳"}, {n: "Turkey", p: "+90", f: "🇹🇷"}, {n: "Hungary", p: "+36", f: "🇭🇺"}
                     ];
                     function getOptionsHtml() {
@@ -74,7 +74,7 @@
                 </script>
 
                 <div class="space-y-4">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-[-8px] italic">Phone Contacts</label>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase ml-2 mb-[-8px] italic">Phone Numbers</label>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <div class="flex flex-1 gap-2">
                             <select id="prefixCell" onchange="toggleManual('prefixCell', 'manualCell')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none">
@@ -201,30 +201,4 @@
                 nomeCognome: document.getElementById('nomeCognome').value,
                 indirizzo: document.getElementById('indirizzo').value,
                 cell: prefCell + " " + document.getElementById('cell').value,
-                tel: prefTel + " " + document.getElementById('tel').value,
-                occupazione: document.getElementById('occupazione').value,
-                cerco: document.getElementById('cerco').value,
-                foto: photoFileName,
-                timestamp: new Date().toLocaleString('it-IT')
-            };
-
-            allContacts.unshift(data);
-            const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
-            const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts, null, 2))));
-            const body = { message: `Entry: ${data.nomeCognome}`, content, sha: fileSha };
-            
-            const res = await fetch(url, { method: "PUT", headers: { "Authorization": `token ${config.token}`, "Content-Type": "application/json" }, body: JSON.stringify(body) });
-            if (res.ok) { 
-                alert("Thank you for providing your details.\n\nOur sales department will contact you as soon as possible.\n\nRIVIT S.p.A SB"); 
-                location.reload(); 
-            } else { 
-                alert("Error sending data."); 
-                btn.disabled = false; btn.innerText = "SAVE CONTACT";
-            }
-        };
-
-        if (config) ghFetch();
-        function logout() { if(confirm("Reset cloud?")) { localStorage.removeItem('gh_crm_config'); location.reload(); } }
-    </script>
-</body>
-</html>
+                tel: prefTel + " "
