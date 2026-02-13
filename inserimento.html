@@ -2,31 +2,35 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>RIVIT S.p.A SB - Entry</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-input, textarea, select { font-size:16px !important; }
-body {
+input, textarea { font-size:16px !important; }
+
+body{
     background-image:url('intro.jpg');
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
     min-height:100vh;
 }
-.glass-panel {
+
+.glass-panel{
     background:rgba(255,255,255,0.96);
     backdrop-filter:blur(12px);
     border:1px solid rgba(255,255,255,0.4);
 }
-.status-dot {
+
+.status-dot{
     height:8px;width:8px;border-radius:50%;
     display:inline-block;margin-right:6px;
 }
-.modal-bg {
+
+.modal-bg{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,0.6);
@@ -34,6 +38,13 @@ body {
     align-items:center;
     justify-content:center;
     z-index:50;
+}
+.photo-preview{
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:16px;
+    border:2px solid #ddd;
 }
 </style>
 </head>
@@ -64,16 +75,23 @@ body {
 </div>
 </header>
 
-<main class="glass-panel p-6 rounded-[2rem] shadow-2xl">
+<main class="glass-panel p-6 rounded-[2rem] shadow-2xl shadow-black/30">
 
 <form id="contactForm" class="space-y-4">
 
-<input type="text" placeholder="Company" required class="w-full p-3 border rounded-xl">
-<input type="text" placeholder="Contact Person" required class="w-full p-3 border rounded-xl">
-<input type="text" placeholder="City" required class="w-full p-3 border rounded-xl">
+<input type="text" id="company" placeholder="Company" required class="w-full p-3 border rounded-xl">
+<input type="text" id="person" placeholder="Contact Person" required class="w-full p-3 border rounded-xl">
+<input type="text" id="city" placeholder="City" required class="w-full p-3 border rounded-xl">
 
-<textarea placeholder="What does the company do?" required class="w-full p-3 border rounded-xl"></textarea>
-<textarea placeholder="What are they looking for?" required class="w-full p-3 border rounded-xl"></textarea>
+<textarea id="activity" placeholder="What does the company do?" required class="w-full p-3 border rounded-xl"></textarea>
+<textarea id="need" placeholder="What are they looking for?" required class="w-full p-3 border rounded-xl"></textarea>
+
+<!-- FOTO -->
+<div>
+<label class="text-xs font-bold uppercase text-slate-600">Photo</label>
+<input type="file" id="photoInput" accept="image/*" class="w-full mt-2 mb-3">
+<div id="photoContainer" class="flex justify-center"></div>
+</div>
 
 <div class="flex gap-3">
 <button type="button" onclick="if(confirm('Cancel entry?')) location.reload()" class="w-1/3 py-3 bg-slate-200 rounded-xl font-bold uppercase text-xs">
@@ -121,68 +139,112 @@ Save Contact
 
 <script>
 
-// ===== PIN CONFIG =====
-const SYSTEM_PIN = "1234"; // 🔐 Cambialo qui
+// ===== PIN =====
+const SYSTEM_PIN="1234";
 
-function openPin(){
-document.getElementById("pinModal").style.display="flex";
-}
-function closePin(){
-document.getElementById("pinModal").style.display="none";
-}
+function openPin(){document.getElementById("pinModal").style.display="flex";}
+function closePin(){document.getElementById("pinModal").style.display="none";}
 function checkPin(){
-const pin=document.getElementById("pinInput").value;
-if(pin===SYSTEM_PIN){
-closePin();
-openConfig();
-}else{
-alert("Invalid PIN");
-}
+if(document.getElementById("pinInput").value===SYSTEM_PIN){
+closePin();openConfig();
+}else alert("Invalid PIN");
 }
 
 // ===== CONFIG =====
-function openConfig(){
-document.getElementById("configModal").style.display="flex";
-}
-function closeConfig(){
-document.getElementById("configModal").style.display="none";
-}
-
+function openConfig(){document.getElementById("configModal").style.display="flex";}
+function closeConfig(){document.getElementById("configModal").style.display="none";}
 function saveConfig(){
 const repo=document.getElementById("repoInput").value;
 const token=document.getElementById("tokenInput").value;
-if(!repo || !token){
-alert("Please fill all fields");
-return;
-}
+if(!repo||!token){alert("Fill all fields");return;}
 localStorage.setItem("gh_crm_config",JSON.stringify({repo,token}));
 updateStatus(true);
 closeConfig();
 }
-
 function logout(){
-if(confirm("Reset cloud configuration?")){
 localStorage.removeItem("gh_crm_config");
 updateStatus(false);
 closeConfig();
-}
 }
 
 // ===== STATUS =====
 function updateStatus(active){
 if(active){
-document.getElementById("statusDot").className="status-dot bg-green-500";
-document.getElementById("statusText").innerText="Cloud Active";
+statusDot.className="status-dot bg-green-500";
+statusText.innerText="Cloud Active";
 }else{
-document.getElementById("statusDot").className="status-dot bg-slate-300";
-document.getElementById("statusText").innerText="Cloud Offline";
+statusDot.className="status-dot bg-slate-300";
+statusText.innerText="Cloud Offline";
+}
+}
+if(localStorage.getItem("gh_crm_config"))updateStatus(true);
+
+// ===== FOTO =====
+let photoBase64="";
+
+document.getElementById("photoInput").addEventListener("change",function(e){
+const file=e.target.files[0];
+if(!file)return;
+
+const reader=new FileReader();
+reader.onload=function(event){
+const img=new Image();
+img.onload=function(){
+
+const canvas=document.createElement("canvas");
+const maxSize=600;
+let width=img.width;
+let height=img.height;
+
+if(width>height){
+if(width>maxSize){
+height*=maxSize/width;
+width=maxSize;
+}
+}else{
+if(height>maxSize){
+width*=maxSize/height;
+height=maxSize;
 }
 }
 
-// INIT
-if(localStorage.getItem("gh_crm_config")){
-updateStatus(true);
-}
+canvas.width=width;
+canvas.height=height;
+const ctx=canvas.getContext("2d");
+ctx.drawImage(img,0,0,width,height);
+
+photoBase64=canvas.toDataURL("image/jpeg",0.8);
+
+document.getElementById("photoContainer").innerHTML=
+`<img src="${photoBase64}" class="photo-preview shadow-lg">`;
+
+};
+img.src=event.target.result;
+};
+reader.readAsDataURL(file);
+});
+
+// ===== SAVE =====
+document.getElementById("contactForm").addEventListener("submit",function(e){
+e.preventDefault();
+
+const data={
+date:new Date().toISOString(),
+company:company.value,
+person:person.value,
+city:city.value,
+activity:activity.value,
+need:need.value,
+photo:photoBase64
+};
+
+console.log("Saved data:",data);
+alert("Contact prepared (ready for GitHub push)");
+
+this.reset();
+document.getElementById("photoContainer").innerHTML="";
+photoBase64="";
+});
 
 </script>
 
