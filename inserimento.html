@@ -39,16 +39,20 @@
 <body class="antialiased text-slate-900">
 
 <div class="w-full max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
-    <!-- Header with Logo -->
+
+    <!-- Header -->
     <header class="mb-6">
         <div class="glass-panel p-4 sm:p-6 shadow-2xl flex justify-between items-center border-b-4 border-red-600">
             <div class="flex items-center gap-3">
                 <img src="FOTO1.jpg" alt="RIVIT Logo" class="h-14 w-auto">
                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">RIVIT S.p.A SB</h1>
             </div>
-            <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm">
-                <span id="statusDot" class="status-dot bg-slate-300"></span>
-                <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm cursor-pointer" onclick="refreshCloud()">
+                    <span id="statusDot" class="status-dot bg-slate-300"></span>
+                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
+                </div>
+                <button onclick="logout()" class="px-3 py-1 bg-red-600 text-white rounded-full text-xs font-bold shadow-lg">Reset Cloud</button>
             </div>
         </div>
     </header>
@@ -56,6 +60,8 @@
     <!-- Main Form -->
     <main class="glass-panel p-6 sm:p-8 shadow-2xl border-b-4 border-slate-200">
         <form id="contactForm" class="space-y-6">
+
+            <!-- Personal Info -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Company</label>
@@ -71,7 +77,7 @@
                 </div>
             </div>
 
-            <!-- Phone Section -->
+            <!-- Phone Fields -->
             <script>
                 const countries = [
                     {name:"Italy", code:"+39", flag:"🇮🇹"}, {name:"USA", code:"+1", flag:"🇺🇸"}, {name:"UK", code:"+44", flag:"🇬🇧"},
@@ -108,13 +114,13 @@
                 </div>
             </div>
 
-            <!-- Business Fields -->
+            <!-- Business Info -->
             <div class="grid grid-cols-1 gap-4">
                 <textarea id="activity" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What is your business activity?"></textarea>
                 <textarea id="lookingFor" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What are you looking for from Rivit?"></textarea>
             </div>
 
-            <!-- Photo Capture -->
+            <!-- Business Card Photo -->
             <div class="p-4 border-2 border-dashed border-red-100 rounded-3xl bg-red-50/30">
                 <label class="block text-[10px] font-bold text-red-600 uppercase mb-3 text-center tracking-widest italic">Business Card Photo</label>
                 <div class="flex flex-col items-center gap-3">
@@ -136,26 +142,65 @@
                     <i class="fas fa-save"></i> Save Contact
                 </button>
             </div>
+
         </form>
     </main>
 </div>
 
 <script>
+// Configuration for GitHub repo
+let config = JSON.parse(localStorage.getItem('gh_crm_config'));
+let fileSha = "";
+let allContacts = [];
 let compressedImageBase64 = "";
+
+// Cloud connection
+async function ghFetch() {
+    if(!config) return;
+    const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+    try {
+        const res = await fetch(url,{headers:{"Authorization":`token ${config.token}`}, cache:'no-store'});
+        if(res.ok){
+            const data = await res.json();
+            fileSha = data.sha;
+            allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            document.getElementById('statusDot').className="status-dot bg-green-500";
+            document.getElementById('statusText').innerText="Cloud Active";
+        } else {
+            document.getElementById('statusText').innerText="Cloud Offline";
+        }
+    } catch(e) {
+        document.getElementById('statusText').innerText="Cloud Offline";
+    }
+}
+
+// Refresh button
+function refreshCloud() { ghFetch(); }
+
+// Logout / reset
+function logout() {
+    if(confirm("Reset Cloud?")){
+        localStorage.removeItem('gh_crm_config');
+        location.reload();
+    }
+}
+
+// Phone manual toggle
 function toggleManual(selectId, manualId){
-    const sel = document.getElementById(selectId);
-    const man = document.getElementById(manualId);
+    const sel=document.getElementById(selectId);
+    const man=document.getElementById(manualId);
     if(sel.value==="manual"){ man.classList.remove('hidden'); sel.classList.add('hidden'); man.focus(); }
 }
+
+// Photo capture
 document.getElementById('photoInput').onchange = function(e){
-    const file = e.target.files[0]; if(!file) return;
-    const reader = new FileReader();
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
     reader.onload = function(event){
-        const img = new Image(); img.src = event.target.result;
+        const img=new Image(); img.src=event.target.result;
         img.onload = function(){
             const canvas=document.createElement('canvas'); const MAX=1000;
-            let w=img.width, h=img.height;
-            if(w>MAX){ h*=MAX/w; w=MAX; }
+            let w=img.width, h=img.height; if(w>MAX){ h*=MAX/w; w=MAX; }
             canvas.width=w; canvas.height=h;
             canvas.getContext('2d').drawImage(img,0,0,w,h);
             compressedImageBase64=canvas.toDataURL('image/jpeg',0.7);
@@ -167,15 +212,25 @@ document.getElementById('photoInput').onchange = function(e){
 };
 function resetPhoto(){ compressedImageBase64=""; document.getElementById('photoInput').value=""; document.getElementById('previewArea').classList.add('hidden'); }
 
-document.getElementById('contactForm').onsubmit = function(e){
+// Form submission
+document.getElementById('contactForm').onsubmit = async function(e){
     e.preventDefault();
     const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerText="SAVING...";
-    
+
     const prefMobile = document.getElementById('prefixMobile').classList.contains('hidden') ? document.getElementById('manualMobile').value : document.getElementById('prefixMobile').value;
     const prefLandline = document.getElementById('prefixLandline').classList.contains('hidden') ? document.getElementById('manualLandline').value : document.getElementById('prefixLandline').value;
-    
-    // Save data locally for now
-    const data = {
+
+    let photoFileName="";
+    if(compressedImageBase64){
+        photoFileName=`IMG_${Date.now()}.jpg`;
+        const url = `https://api.github.com/repos/${config.repo}/contents/allegati/${photoFileName}`;
+        const content = compressedImageBase64.split(',')[1];
+        const body={message:`Photo: ${photoFileName}`, content};
+        const res = await fetch(url,{method:"PUT", headers:{"Authorization":`token ${config.token}`,"Content-Type":"application/json"}, body:JSON.stringify(body)});
+        if(!res.ok){ alert("Error uploading photo"); btn.disabled=false; btn.innerText="Save Contact"; return; }
+    }
+
+    const data={
         company: document.getElementById('company').value,
         fullName: document.getElementById('fullName').value,
         city: document.getElementById('city').value,
@@ -183,17 +238,27 @@ document.getElementById('contactForm').onsubmit = function(e){
         landline: prefLandline + " " + document.getElementById('landline').value,
         activity: document.getElementById('activity').value,
         lookingFor: document.getElementById('lookingFor').value,
-        photo: compressedImageBase64,
+        photo: photoFileName,
         timestamp: new Date().toLocaleString()
     };
-    
-    // Here you would upload the image to `allegati` directory and save the link
-    
-    console.log(data); // for debugging
-    
-    alert("Thank you for submitting your data.\nOur sales team will contact you shortly.");
-    location.reload();
+
+    allContacts.unshift(data);
+    const url=`https://api.github.com/repos/${config.repo}/contents/data.json`;
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts,null,2))));
+    const body={message:`Entry: ${data.fullName}`, content, sha:fileSha};
+    const res = await fetch(url,{method:"PUT", headers:{"Authorization":`token ${config.token}`,"Content-Type":"application/json"}, body:JSON.stringify(body)});
+    if(res.ok){
+        alert("Thank you for submitting your data.\nOur sales team will contact you shortly.");
+        location.reload();
+    } else {
+        alert("Error saving data.");
+        btn.disabled=false; btn.innerText="Save Contact";
+    }
 };
+
+// Initial cloud fetch
+if(config) ghFetch();
 </script>
+
 </body>
 </html>
