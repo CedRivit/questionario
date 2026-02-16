@@ -34,38 +34,66 @@
         50% { opacity: 0.5; }
     }
     .syncing { animation: pulse 1.5s infinite; }
+    
+    /* Overlay Configurazione */
+    #configOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.8);
+        z-index: 50;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
 </style>
 </head>
 <body class="antialiased text-slate-900">
 
+<div id="configOverlay">
+    <div class="glass-panel p-8 w-full max-w-md shadow-2xl">
+        <h2 class="text-xl font-bold mb-4 text-slate-800"><i class="fab fa-github mr-2"></i> GitHub Settings</h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 italic">Personal Access Token</label>
+                <input type="password" id="ghToken" class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="ghp_xxxxxxxxxxxx">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 italic">Repository (user/repo)</label>
+                <input type="text" id="ghRepo" class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="username/repository">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeConfig()" class="flex-1 py-3 bg-slate-200 text-slate-600 font-bold rounded-2xl uppercase text-xs">Annulla</button>
+                <button onclick="saveConfig()" class="flex-1 py-3 bg-red-600 text-white font-bold rounded-2xl uppercase text-xs shadow-lg">Salva Cloud</button>
+            </div>
+            <button onclick="logout()" class="w-full py-2 text-red-600 text-[10px] font-bold uppercase underline">Resetta configurazione attuale</button>
+        </div>
+    </div>
+</div>
+
 <div class="w-full max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- Header -->
     <header class="mb-6">
         <div class="glass-panel p-4 sm:p-6 shadow-2xl flex justify-between items-center border-b-4 border-red-600">
             <div class="flex items-center gap-3">
                 <img src="FOTO1.jpg" alt="RIVIT Logo" class="h-14 w-auto">
                 <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">RIVIT S.p.A SB</h1>
             </div>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
                 <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm cursor-pointer" onclick="refreshCloud()">
                     <span id="statusDot" class="status-dot bg-slate-300"></span>
-                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
+                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Offline</span>
                 </div>
-
-                <!-- CLOUD CONFIG BUTTON -->
-                <button onclick="openCloudConfig()" class="px-3 py-1 bg-slate-800 text-white rounded-full text-xs font-bold shadow-lg">
-                    Cloud Config
+                <button onclick="checkPin()" class="w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-slate-700 transition-colors">
+                    <i class="fab fa-github"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Form -->
     <main class="glass-panel p-6 sm:p-8 shadow-2xl border-b-4 border-slate-200">
         <form id="contactForm" class="space-y-6">
 
-            <!-- Personal Info -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Company</label>
@@ -81,7 +109,6 @@
                 </div>
             </div>
 
-            <!-- Phone Fields -->
             <script>
                 const countries = [
                     {name:"Italy", code:"+39", flag:"🇮🇹"}, {name:"USA", code:"+1", flag:"🇺🇸"}, {name:"UK", code:"+44", flag:"🇬🇧"},
@@ -96,4 +123,206 @@
                 }
             </script>
 
-            <!-- QUI CONTINUA IDENTICO IL TUO FORM (telefono, textarea, foto, bottoni) -->
+            <div class="space-y-4">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Phone Contacts</label>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <div class="flex flex-1 gap-2">
+                        <select id="prefixMobile" onchange="toggleManual('prefixMobile','manualMobile')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none">
+                            <script>document.write(countryOptions());</script>
+                        </select>
+                        <input type="text" id="manualMobile" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
+                        <input type="tel" id="mobile" required placeholder="Mobile Number" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500">
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <div class="flex flex-1 gap-2">
+                        <select id="prefixLandline" onchange="toggleManual('prefixLandline','manualLandline')" class="w-44 p-3 bg-white border border-slate-200 rounded-2xl font-bold text-[11px] outline-none">
+                            <script>document.write(countryOptions());</script>
+                        </select>
+                        <input type="text" id="manualLandline" placeholder="+00" class="hidden w-24 p-3 bg-red-50 border border-red-200 rounded-2xl outline-none font-bold text-sm">
+                        <input type="tel" id="landline" placeholder="Landline Number" class="flex-1 p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <textarea id="activity" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What is your business activity?"></textarea>
+                <textarea id="lookingFor" rows="2" required class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="What are you looking for from Rivit?"></textarea>
+            </div>
+
+            <div class="p-4 border-2 border-dashed border-red-100 rounded-3xl bg-red-50/30">
+                <label class="block text-[10px] font-bold text-red-600 uppercase mb-3 text-center tracking-widest italic">Business Card Photo</label>
+                <div class="flex flex-col items-center gap-3">
+                    <input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
+                    <button type="button" onclick="document.getElementById('photoInput').click()" class="bg-slate-800 text-white px-8 py-3 rounded-full text-[10px] font-bold uppercase flex items-center gap-2 shadow-lg">
+                        <i class="fas fa-camera text-sm"></i> Take Photo
+                    </button>
+                    <div id="previewArea" class="hidden w-full max-w-[200px] relative mt-2">
+                        <img id="imgPreview" src="" class="w-full rounded-2xl border-4 border-white shadow-xl">
+                        <button type="button" onclick="resetPhoto()" class="absolute -top-3 -right-3 bg-red-600 text-white w-7 h-7 rounded-full text-xs shadow-lg flex items-center justify-center"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button type="button" onclick="if(confirm('Cancel the entry?')) location.reload()" class="w-full sm:w-1/3 py-4 bg-slate-200 text-slate-600 font-bold rounded-3xl uppercase tracking-widest text-xs">Cancel</button>
+                <button type="submit" id="submitBtn" class="w-full sm:w-2/3 py-5 bg-red-600 text-white font-bold rounded-3xl shadow-xl active:scale-95 transition-all flex justify-center items-center gap-4 uppercase tracking-widest text-sm">
+                    <i class="fas fa-save"></i> Save Contact
+                </button>
+            </div>
+
+        </form>
+    </main>
+</div>
+
+<script>
+// Configuration
+const ADMIN_PIN = "1234"; // Cambia qui il tuo PIN di sicurezza
+let config = JSON.parse(localStorage.getItem('gh_crm_config'));
+let fileSha = "";
+let allContacts = [];
+let compressedImageBase64 = "";
+
+// Gestione PIN e Overlay
+function checkPin() {
+    const enteredPin = prompt("Inserisci il PIN per accedere alla configurazione GitHub:");
+    if (enteredPin === ADMIN_PIN) {
+        document.getElementById('configOverlay').style.display = 'flex';
+        if(config) {
+            document.getElementById('ghToken').value = config.token;
+            document.getElementById('ghRepo').value = config.repo;
+        }
+    } else if (enteredPin !== null) {
+        alert("PIN Errato!");
+    }
+}
+
+function closeConfig() {
+    document.getElementById('configOverlay').style.display = 'none';
+}
+
+function saveConfig() {
+    const token = document.getElementById('ghToken').value.trim();
+    const repo = document.getElementById('ghRepo').value.trim();
+    
+    if(!token || !repo) {
+        alert("Inserisci sia Token che Repo!");
+        return;
+    }
+
+    config = { token, repo };
+    localStorage.setItem('gh_crm_config', JSON.stringify(config));
+    alert("Configurazione Salvata!");
+    closeConfig();
+    ghFetch();
+}
+
+// Cloud connection
+async function ghFetch() {
+    if(!config) return;
+    const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+    try {
+        const res = await fetch(url,{headers:{"Authorization":`token ${config.token}`}, cache:'no-store'});
+        if(res.ok){
+            const data = await res.json();
+            fileSha = data.sha;
+            allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            document.getElementById('statusDot').className="status-dot bg-green-500";
+            document.getElementById('statusText').innerText="Cloud Active";
+        } else {
+            document.getElementById('statusText').innerText="Config Error";
+            document.getElementById('statusDot').className="status-dot bg-red-500";
+        }
+    } catch(e) {
+        document.getElementById('statusText').innerText="Cloud Offline";
+        document.getElementById('statusDot').className="status-dot bg-slate-300";
+    }
+}
+
+function refreshCloud() { ghFetch(); }
+
+function logout() {
+    if(confirm("Vuoi davvero resettare i dati di connessione?")){
+        localStorage.removeItem('gh_crm_config');
+        location.reload();
+    }
+}
+
+// Phone manual toggle
+function toggleManual(selectId, manualId){
+    const sel=document.getElementById(selectId);
+    const man=document.getElementById(manualId);
+    if(sel.value==="manual"){ man.classList.remove('hidden'); sel.classList.add('hidden'); man.focus(); }
+}
+
+// Photo capture
+document.getElementById('photoInput').onchange = function(e){
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload = function(event){
+        const img=new Image(); img.src=event.target.result;
+        img.onload = function(){
+            const canvas=document.createElement('canvas'); const MAX=1000;
+            let w=img.width, h=img.height; if(w>MAX){ h*=MAX/w; w=MAX; }
+            canvas.width=w; canvas.height=h;
+            canvas.getContext('2d').drawImage(img,0,0,w,h);
+            compressedImageBase64=canvas.toDataURL('image/jpeg',0.7);
+            document.getElementById('imgPreview').src=compressedImageBase64;
+            document.getElementById('previewArea').classList.remove('hidden');
+        }
+    }
+    reader.readAsDataURL(file);
+};
+function resetPhoto(){ compressedImageBase64=""; document.getElementById('photoInput').value=""; document.getElementById('previewArea').classList.add('hidden'); }
+
+// Form submission
+document.getElementById('contactForm').onsubmit = async function(e){
+    e.preventDefault();
+    if(!config) { alert("Configura GitHub prima di salvare!"); checkPin(); return; }
+
+    const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.innerText="SAVING...";
+
+    const prefMobile = document.getElementById('prefixMobile').classList.contains('hidden') ? document.getElementById('manualMobile').value : document.getElementById('prefixMobile').value;
+    const prefLandline = document.getElementById('prefixLandline').classList.contains('hidden') ? document.getElementById('manualLandline').value : document.getElementById('prefixLandline').value;
+
+    let photoFileName="";
+    if(compressedImageBase64){
+        photoFileName=`IMG_${Date.now()}.jpg`;
+        const url = `https://api.github.com/repos/${config.repo}/contents/allegati/${photoFileName}`;
+        const content = compressedImageBase64.split(',')[1];
+        const body={message:`Photo: ${photoFileName}`, content};
+        const res = await fetch(url,{method:"PUT", headers:{"Authorization":`token ${config.token}`,"Content-Type":"application/json"}, body:JSON.stringify(body)});
+        if(!res.ok){ alert("Error uploading photo"); btn.disabled=false; btn.innerText="Save Contact"; return; }
+    }
+
+    const data={
+        company: document.getElementById('company').value,
+        fullName: document.getElementById('fullName').value,
+        city: document.getElementById('city').value,
+        mobile: prefMobile + " " + document.getElementById('mobile').value,
+        landline: prefLandline + " " + document.getElementById('landline').value,
+        activity: document.getElementById('activity').value,
+        lookingFor: document.getElementById('lookingFor').value,
+        photo: photoFileName,
+        timestamp: new Date().toLocaleString()
+    };
+
+    allContacts.unshift(data);
+    const url=`https://api.github.com/repos/${config.repo}/contents/data.json`;
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(allContacts,null,2))));
+    const body={message:`Entry: ${data.fullName}`, content, sha:fileSha};
+    const res = await fetch(url,{method:"PUT", headers:{"Authorization":`token ${config.token}`,"Content-Type":"application/json"}, body:JSON.stringify(body)});
+    if(res.ok){
+        alert("Thank you for submitting your data.\nOur sales team will contact you shortly.");
+        location.reload();
+    } else {
+        alert("Error saving data. Controlla i permessi del token.");
+        btn.disabled=false; btn.innerText="Save Contact";
+    }
+};
+
+if(config) ghFetch();
+</script>
+
+</body>
+</html>
