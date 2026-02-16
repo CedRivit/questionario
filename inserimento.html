@@ -29,125 +29,29 @@
         display: inline-block;
         margin-right: 6px;
     }
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-    .syncing { animation: pulse 1.5s infinite; }
 </style>
 </head>
 <body class="antialiased text-slate-900">
 
 <div class="w-full max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- Header -->
-    <header class="mb-6">
-        <div class="glass-panel p-4 sm:p-6 shadow-2xl flex justify-between items-center border-b-4 border-red-600">
-            <div class="flex items-center gap-3">
-                <img src="FOTO1.jpg" alt="RIVIT Logo" class="h-14 w-auto">
-                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">RIVIT S.p.A SB</h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm cursor-pointer" onclick="refreshCloud()">
-                    <span id="statusDot" class="status-dot bg-slate-300"></span>
-                    <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
-                </div>
-
-                <!-- CONFIGURATION BUTTON WITH PIN -->
-                <button onclick="openConfig()" class="px-3 py-1 bg-slate-800 text-white rounded-full text-xs font-bold shadow-lg">
-                    Configuration
-                </button>
-            </div>
+<header class="mb-6">
+    <div class="glass-panel p-4 sm:p-6 shadow-2xl flex justify-between items-center border-b-4 border-red-600">
+        <div class="flex items-center gap-3">
+            <img src="FOTO1.jpg" alt="RIVIT Logo" class="h-14 w-auto">
+            <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">RIVIT S.p.A SB</h1>
         </div>
-    </header>
-
-    <!-- Main Form -->
-    <main class="glass-panel p-6 sm:p-8 shadow-2xl border-b-4 border-slate-200">
-        <form id="contactForm" class="space-y-6">
-
-            <!-- Personal Info -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="sm:col-span-2">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Company</label>
-                    <input type="text" id="company" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="Business Name">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Full Name</label>
-                    <input type="text" id="fullName" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="First and Last Name">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">City</label>
-                    <input type="text" id="city" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="City">
-                </div>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center bg-white/80 px-3 py-1 rounded-full border border-slate-200 shadow-sm cursor-pointer" onclick="refreshCloud()">
+                <span id="statusDot" class="status-dot bg-slate-300"></span>
+                <span id="statusText" class="text-[10px] font-bold uppercase text-slate-500 italic">Cloud Offline</span>
             </div>
 
-            <!-- Phone Fields -->
-            <script>
-                const countries = [
-                    {name:"Italy", code:"+39", flag:"🇮🇹"}, {name:"USA", code:"+1", flag:"🇺🇸"}, {name:"UK", code:"+44", flag:"🇬🇧"},
-                    {name:"Germany", code:"+49", flag:"🇩🇪"}, {name:"France", code:"+33", flag:"🇫🇷"}, {name:"Spain", code:"+34", flag:"🇪🇸"},
-                    {name:"Canada", code:"+1", flag:"🇨🇦"}, {name:"Australia", code:"+61", flag:"🇦🇺"}, {name:"Switzerland", code:"+41", flag:"🇨🇭"},
-                    {name:"Belgium", code:"+32", flag:"🇧🇪"}, {name:"Netherlands", code:"+31", flag:"🇳🇱"}, {name:"Norway", code:"+47", flag:"🇳🇴"},
-                    {name:"Sweden", code:"+46", flag:"🇸🇪"}, {name:"Finland", code:"+358", flag:"🇫🇮"}, {name:"Denmark", code:"+45", flag:"🇩🇰"},
-                    {name:"Ireland", code:"+353", flag:"🇮🇪"}, {name:"Japan", code:"+81", flag:"🇯🇵"}, {name:"China", code:"+86", flag:"🇨🇳"}
-                ];
-                function countryOptions() {
-                    return countries.map(c=>`<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`).join('') + `<option value="manual">➕ Other...</option>`;
-                }
-            </script>
+            <!-- NEW PIN PROTECTED CONFIG BUTTON -->
+            <button onclick="openCloudConfig()" class="px-3 py-1 bg-slate-800 text-white rounded-full text-xs font-bold shadow-lg">
+                Cloud Config
+            </button>
 
-            <!-- RESTO DEL TUO FORM IDENTICO -->
-
-        </form>
-    </main>
-</div>
-
-<script>
-
-// PIN Protected Configuration
-function openConfig() {
-    const pin = prompt("Enter PIN to access configuration:");
-    if(pin === "1234") {
-        if(confirm("Do you want to reset cloud configuration?")){
-            localStorage.removeItem('gh_crm_config');
-            location.reload();
-        }
-    } else if(pin !== null) {
-        alert("Incorrect PIN");
-    }
-}
-
-// Configuration for GitHub repo
-let config = JSON.parse(localStorage.getItem('gh_crm_config'));
-let fileSha = "";
-let allContacts = [];
-let compressedImageBase64 = "";
-
-// Cloud connection
-async function ghFetch() {
-    if(!config) return;
-    const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
-    try {
-        const res = await fetch(url,{headers:{"Authorization":`token ${config.token}`}, cache:'no-store'});
-        if(res.ok){
-            const data = await res.json();
-            fileSha = data.sha;
-            allContacts = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-            document.getElementById('statusDot').className="status-dot bg-green-500";
-            document.getElementById('statusText').innerText="Cloud Active";
-        } else {
-            document.getElementById('statusText').innerText="Cloud Offline";
-        }
-    } catch(e) {
-        document.getElementById('statusText').innerText="Cloud Offline";
-    }
-}
-
-function refreshCloud() { ghFetch(); }
-
-if(config) ghFetch();
-
-</script>
-
-</body>
-</html>
+        </div>
+    </div>
+</header>
