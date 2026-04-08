@@ -67,7 +67,7 @@
 <body class="antialiased text-slate-900">
 
 <div id="configOverlay">
-    <div class="glass-panel p-8 w-full max-w-md shadow-2xl">
+    <div class="glass-panel p-8 w-full max-md shadow-2xl">
         <h2 class="text-xl font-bold mb-4 text-slate-800"><i class="fab fa-github mr-2"></i> GitHub Settings</h2>
         <div class="space-y-4">
             <div>
@@ -122,6 +122,10 @@
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Email Address</label>
                     <input type="email" id="email" required class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="example@mail.com">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">Website</label>
+                    <input type="text" id="website" class="w-full p-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-red-500" placeholder="www.company.com">
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase ml-2 mb-1 italic">City</label>
@@ -304,6 +308,7 @@ document.getElementById('contactForm').onsubmit = async function(e){
         company: document.getElementById('company').value,
         fullName: document.getElementById('fullName').value,
         email: document.getElementById('email').value,
+        website: document.getElementById('website').value, // Inclusione del campo website nel salvataggio
         city: document.getElementById('city').value,
         mobile: prefMobile + " " + document.getElementById('mobile').value,
         landline: prefLandline + " " + document.getElementById('landline').value,
