@@ -20,7 +20,6 @@
 
 <div class="max-w-7xl mx-auto p-4 md:p-8">
 
-    <!-- Header -->
     <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="flex items-center gap-4">
             <img src="FOTO1.jpg" alt="Logo" class="h-12 w-auto object-contain">
@@ -47,17 +46,16 @@
         </div>
     </header>
 
-    <!-- Cloud Setup -->
     <div id="setupArea" class="hidden mb-8 p-6 bg-white border-2 border-red-100 rounded-3xl shadow-md max-w-md mx-auto glass-panel">
         <h3 class="font-bold text-slate-800 mb-4 uppercase text-sm text-center">Cloud Setup</h3>
+        <p class="text-[10px] text-slate-400 mb-4 text-center">Enter your GitHub credentials to sync data.</p>
         <div class="space-y-4">
-            <input type="password" id="ghToken" placeholder="GitHub Token" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-red-500">
+            <input type="password" id="ghToken" placeholder="GitHub Token (classic or fine-grained)" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-red-500">
             <input type="text" id="ghRepo" placeholder="username/repository" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-red-500">
-            <button onclick="saveSetup()" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ACCESS DATA</button>
+            <button onclick="saveSetup()" class="w-full bg-red-600 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all uppercase tracking-widest">Access Data</button>
         </div>
     </div>
 
-    <!-- Main Table -->
     <main id="mainApp" class="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
         <div class="table-container overflow-x-auto">
             <table class="w-full text-left border-collapse whitespace-nowrap">
@@ -85,6 +83,7 @@
 let config = JSON.parse(localStorage.getItem('gh_crm_config'));
 let contacts = [];
 
+// Controllo sessione
 if (!config) {
     document.getElementById('setupArea').classList.remove('hidden');
     document.getElementById('mainApp').classList.add('hidden');
@@ -96,6 +95,8 @@ function saveSetup() {
     if(token && repo) {
         localStorage.setItem('gh_crm_config', JSON.stringify({token, repo}));
         location.reload();
+    } else {
+        alert("Inserisci sia il Token che il nome del Repository!");
     }
 }
 
@@ -115,45 +116,67 @@ function setStatus(text, color, isSyncing = false) {
     dot.className = `status-dot ${colors[color] || 'bg-slate-300'}`;
 }
 
+// Funzione Decodifica sicura (gestisce UTF-8 correttamente)
 function b64_to_utf8(str) {
-    const decoded = atob(str);
-    const bytes = Uint8Array.from(decoded, c => c.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
+    return decodeURIComponent(escape(window.atob(str)));
 }
 
 async function fetchData() {
     if (!config) return;
-    setStatus("Downloading...", "blue", true);
+    setStatus("Syncing...", "blue", true);
+    
+    // Assicurati che il file si chiami data.json nel tuo repository
     const url = `https://api.github.com/repos/${config.repo}/contents/data.json`;
+    
     try {
         const res = await fetch(url, { 
-            headers: { "Authorization": `token ${config.token}` },
+            headers: { 
+                "Authorization": `token ${config.token}`,
+                "Accept": "application/vnd.github.v3+json"
+            },
             cache: 'no-store'
         });
+
         if (res.ok) {
             const data = await res.json();
-            contacts = JSON.parse(b64_to_utf8(data.content));
+            const content = b64_to_utf8(data.content);
+            contacts = JSON.parse(content);
+            
+            // Ordina per data (più recenti in alto)
+            contacts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
             renderTable();
             setStatus("Synchronized", "green");
             document.getElementById('counter').innerText = `${contacts.length} Contacts in Archive`;
         } else {
-            console.error("GitHub API error:", res.status, res.statusText);
-            setStatus("File Error", "red");
+            const errData = await res.json();
+            console.error("Errore GitHub:", errData.message);
+            
+            if(res.status === 404) {
+                setStatus("File Not Found", "red");
+                alert("Errore 404: Il file data.json non esiste nel repository.");
+            } else if(res.status === 401) {
+                setStatus("Auth Error", "red");
+                alert("Errore 401: Token non valido o scaduto.");
+            } else {
+                setStatus("File Error", "red");
+            }
         }
     } catch (e) { 
-        console.error("Fetch error:", e);
-        setStatus("Offline", "red"); 
+        console.error("Errore di rete:", e);
+        setStatus("Network Offline", "red"); 
     }
 }
 
 function renderTable() {
     const list = document.getElementById('contactsTable');
     if (contacts.length === 0) {
-        list.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 italic font-medium">No contacts found.</td></tr>`;
+        list.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400 italic font-medium">No contacts found in data.json.</td></tr>`;
         return;
     }
 
     list.innerHTML = contacts.map(c => {
+        // Gestione allegati (se presenti)
         const fotoLink = c.photo && c.photo !== "" ? 
             `<a href="allegati/${c.photo}" target="_blank" class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                 <i class="fas fa-image"></i>
@@ -161,15 +184,15 @@ function renderTable() {
             `<span class="text-slate-300 text-[10px] font-bold uppercase">No Photo</span>`;
 
         return `
-        <tr class="hover:bg-slate-50 transition-colors">
+        <tr class="hover:bg-slate-50 transition-colors border-b border-slate-50">
             <td class="p-5 text-[11px] font-mono text-slate-400">${c.timestamp || '-'}</td>
-            <td class="p-5 font-black text-red-600 text-sm italic uppercase">${c.company}</td>
-            <td class="p-5 font-bold text-slate-700 text-sm">${c.fullName}</td>
+            <td class="p-5 font-black text-red-600 text-sm italic uppercase tracking-tight">${c.company || 'Unknown'}</td>
+            <td class="p-5 font-bold text-slate-700 text-sm">${c.fullName || 'No Name'}</td>
             <td class="p-5 text-[11px] text-slate-500 leading-tight">
-                <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${c.city || '-'}<br>
-                <i class="fas fa-phone text-slate-300 mr-1"></i> ${c.mobile || c.landline || '-'}
+                <div class="flex items-center mb-1"><i class="fas fa-map-marker-alt text-red-400 w-4"></i> ${c.city || '-'}</div>
+                <div class="flex items-center"><i class="fas fa-phone text-slate-300 w-4"></i> ${c.mobile || c.landline || '-'}</div>
             </td>
-            <td class="p-5 text-[11px] text-slate-600 max-w-xs truncate font-medium">
+            <td class="p-5 text-[11px] text-slate-600 max-w-[200px] whitespace-normal font-medium">
                 ${c.lookingFor || '-'}
             </td>
             <td class="p-5 text-center">
@@ -186,14 +209,14 @@ function exportToExcel() {
     const csvRows = [
         headers.join(";"),
         ...contacts.map(c => [
-            `"${c.timestamp}"`,
-            `"${c.company}"`,
-            `"${c.fullName}"`,
-            `"${c.city}"`,
-            `"${c.mobile}"`,
-            `"${c.landline}"`,
-            `"${c.activity}"`,
-            `"${c.lookingFor}"`,
+            `"${c.timestamp || ''}"`,
+            `"${c.company || ''}"`,
+            `"${c.fullName || ''}"`,
+            `"${c.city || ''}"`,
+            `"${c.mobile || ''}"`,
+            `"${c.landline || ''}"`,
+            `"${c.activity || ''}"`,
+            `"${c.lookingFor || ''}"`,
             `"${c.photo || ''}"`
         ].join(";"))
     ].join("\n");
@@ -202,11 +225,14 @@ function exportToExcel() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `Rivit_Archive_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`;
+    link.download = `Rivit_Archive_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
 }
 
-if (config) fetchData();
+// Avvio automatico al caricamento
+if (config) {
+    fetchData();
+}
 </script>
 </body>
 </html>
