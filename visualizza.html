@@ -260,6 +260,11 @@ function exportToExcel() {
                     ? `${baseUrl}allegati/${c.photo}`
                     : "";
 
+            const photoLinkCell =
+                photoLink !== ""
+                    ? `"=HYPERLINK(""${photoLink}"",""Apri Foto"")"`
+                    : `""`;
+
             return [
 
                 `"${c.timestamp || ''}"`,
@@ -271,7 +276,7 @@ function exportToExcel() {
                 `"${c.activity || ''}"`,
                 `"${c.lookingFor || ''}"`,
                 `"${c.photo || ''}"`,
-                `"${photoLink}"`
+                photoLinkCell
 
             ].join(";");
 
