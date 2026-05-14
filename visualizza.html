@@ -6,6 +6,7 @@
     <title>RIVIT S.p.A SB - Contacts Archive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { background: #f1f5f9; font-family: sans-serif; }
         .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
@@ -232,7 +233,15 @@ function exportToExcel() {
         return;
     }
 
-    const headers = [
+    const baseUrl =
+        window.location.origin +
+        window.location.pathname.replace(/\/[^\/]*$/, '/');
+
+    const wb = XLSX.utils.book_new();
+    const wsData = [];
+
+    // Header row
+    wsData.push([
         "Date",
         "Company",
         "Full Name",
@@ -243,64 +252,55 @@ function exportToExcel() {
         "Looking For",
         "Photo",
         "Photo Link"
+    ]);
+
+    // Data rows
+    contacts.forEach(c => {
+        wsData.push([
+            c.timestamp || '',
+            c.company || '',
+            c.fullName || '',
+            c.city || '',
+            c.mobile || '',
+            c.landline || '',
+            c.activity || '',
+            c.lookingFor || '',
+            c.photo || '',
+            c.photo && c.photo !== '' ? `${baseUrl}allegati/${c.photo}` : ''
+        ]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Apply real hyperlinks to column J (index 9) for each data row
+    contacts.forEach((c, i) => {
+        if (c.photo && c.photo !== '') {
+            const photoUrl = `${baseUrl}allegati/${c.photo}`;
+            const cellRef = XLSX.utils.encode_cell({ r: i + 1, c: 9 });
+            if (!ws[cellRef]) ws[cellRef] = {};
+            ws[cellRef].v = 'Apri Foto';
+            ws[cellRef].t = 's';
+            ws[cellRef].l = { Target: photoUrl, Tooltip: photoUrl };
+        }
+    });
+
+    // Column widths
+    ws['!cols'] = [
+        { wch: 18 }, // Date
+        { wch: 25 }, // Company
+        { wch: 25 }, // Full Name
+        { wch: 18 }, // City
+        { wch: 16 }, // Mobile
+        { wch: 16 }, // Landline
+        { wch: 20 }, // Activity
+        { wch: 30 }, // Looking For
+        { wch: 25 }, // Photo
+        { wch: 18 }  // Photo Link
     ];
 
-    const baseUrl =
-        window.location.origin +
-        window.location.pathname.replace(/\/[^\/]*$/, '/');
+    XLSX.utils.book_append_sheet(wb, ws, "Contacts");
 
-    const csvRows = [
-
-        headers.join(";"),
-
-        ...contacts.map(c => {
-
-            const photoLink =
-                c.photo && c.photo !== ""
-                    ? `${baseUrl}allegati/${c.photo}`
-                    : "";
-
-            const photoLinkCell =
-                photoLink !== ""
-                    ? `"=HYPERLINK(""${photoLink}"",""Apri Foto"")"`
-                    : `""`;
-
-            return [
-
-                `"${c.timestamp || ''}"`,
-                `"${c.company || ''}"`,
-                `"${c.fullName || ''}"`,
-                `"${c.city || ''}"`,
-                `"${c.mobile || ''}"`,
-                `"${c.landline || ''}"`,
-                `"${c.activity || ''}"`,
-                `"${c.lookingFor || ''}"`,
-                `"${c.photo || ''}"`,
-                photoLinkCell
-
-            ].join(";");
-
-        })
-
-    ].join("\n");
-
-    const blob = new Blob(
-        ["\ufeff" + csvRows],
-        { type: 'text/csv;charset=utf-8;' }
-    );
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-
-    link.href = url;
-
-    link.download =
-        `Rivit_Archive_${new Date()
-            .toLocaleDateString()
-            .replace(/\//g, '-')}.csv`;
-
-    link.click();
+    XLSX.writeFile(wb, `Rivit_Archive_${new Date().toLocaleDateString().replace(/\//g, '-')}.xlsx`);
 }
 
 if (config) fetchData();
